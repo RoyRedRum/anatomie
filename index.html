@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Anatomie Toets</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -22,7 +22,7 @@
   .screen.active{display:flex}
   .card{background:var(--surface);border-radius:var(--radius);padding:18px 16px;box-shadow:var(--shadow)}
   label{font-size:13px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:8px}
-  input[type=text],input[type=password]{width:100%;padding:13px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:16px;font-family:'DM Sans',sans-serif;background:var(--surface2);color:var(--text);outline:none;transition:border-color .2s}
+  input[type=text],input[type=password]{width:100%;padding:13px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:16px!important;font-family:'DM Sans',sans-serif;background:var(--surface2);color:var(--text);outline:none;transition:border-color .2s;-webkit-text-size-adjust:100%}
   input:focus{border-color:var(--accent);background:#fff}
   .btn{display:block;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:14px 16px;font-size:16px;font-weight:600;font-family:'DM Sans',sans-serif;width:100%;cursor:pointer;transition:opacity .2s,transform .1s;text-align:center}
   .btn:active{transform:scale(.98)}
@@ -88,12 +88,12 @@
 </style>
 </head>
 <body>
-
+ 
 <header>
   <h1>Anatomie Toets</h1>
   <p>Medische kennistest</p>
 </header>
-
+ 
 <!-- SCHERM 0: Eerste keer instellen -->
 <div class="screen active" id="screen-config">
   <div style="margin-top:8px">
@@ -111,7 +111,7 @@
     </div>
   </div>
 </div>
-
+ 
 <!-- SCHERM 1: Login -->
 <div class="screen" id="screen-login">
   <div style="margin-top:8px">
@@ -133,7 +133,7 @@
     <button class="btn" id="btn-start">Starten</button>
   </div>
 </div>
-
+ 
 <!-- SCHERM 2: Quiz -->
 <div class="screen" id="screen-quiz">
   <div>
@@ -159,7 +159,7 @@
     <button class="btn secondary" id="btn-prev">← Vorige</button>
   </div>
 </div>
-
+ 
 <!-- SCHERM 3: Resultaten -->
 <div class="screen" id="screen-result">
   <div class="card result-score">
@@ -178,7 +178,7 @@
     <button class="btn secondary" id="btn-restart">Opnieuw proberen</button>
   </div>
 </div>
-
+ 
 <!-- SCHERM 4: Admin -->
 <div class="screen" id="screen-admin">
   <div>
@@ -221,7 +221,7 @@
   </div>
   <button class="btn secondary" style="margin:0 16px" onclick="logout()">Uitloggen</button>
 </div>
-
+ 
 <!-- SCHERM 5: Laden -->
 <div class="screen" id="screen-loading">
   <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;gap:16px;padding:20px">
@@ -230,21 +230,21 @@
     <p style="font-size:13px;color:var(--muted);text-align:center;opacity:.7">Even geduld, dit duurt enkele seconden</p>
   </div>
 </div>
-
+ 
 <script>
 /* =====================================================
    CONFIGURATIE — Apps Script URL opgeslagen in localStorage
    ===================================================== */
 const STORAGE_KEY = 'anatomie_script_url';
-
+ 
 function getScriptUrl() {
   return localStorage.getItem(STORAGE_KEY) || '';
 }
-
+ 
 function saveScriptUrl(url) {
   localStorage.setItem(STORAGE_KEY, url.trim());
 }
-
+ 
 /* =====================================================
    API via fetch naar Google Apps Script
    Apps Script doGet verwerkt de actie via ?action=...
@@ -252,29 +252,29 @@ function saveScriptUrl(url) {
 async function api(action, data, maxRetries = 3) {
   const url = getScriptUrl();
   if (!url) throw new Error('Geen Apps Script URL ingesteld');
-
+ 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       setLoadingMsg(attempt > 1 ? 'Poging ' + attempt + ' van ' + maxRetries + '...' : 'Laden...');
-
+ 
       const params = new URLSearchParams({ action, ...flattenData(data) });
       const response = await fetch(url + '?' + params, {
         method: 'GET',
         redirect: 'follow'
       });
-
+ 
       if (!response.ok) throw new Error('HTTP ' + response.status);
       const result = await response.json();
       if (result && result.error) throw new Error(result.error);
       return result;
-
+ 
     } catch (e) {
       if (attempt === maxRetries) throw e;
       await new Promise(r => setTimeout(r, attempt * 1000));
     }
   }
 }
-
+ 
 // Zet geneste data plat voor URL params
 function flattenData(data) {
   if (!data) return {};
@@ -284,12 +284,12 @@ function flattenData(data) {
   });
   return out;
 }
-
+ 
 function setLoadingMsg(msg) {
   const el = document.getElementById('loading-msg');
   if (el) el.textContent = msg;
 }
-
+ 
 /* =====================================================
    APP STATE
    ===================================================== */
@@ -299,7 +299,7 @@ let answers   = [];
 let currentQ  = 0;
 let userName  = '';
 let isAdmin   = false;
-
+ 
 /* =====================================================
    OPSTARTEN — check of URL al ingesteld is
    ===================================================== */
@@ -312,7 +312,7 @@ window.addEventListener('load', () => {
     showScreen('screen-config');
   }
 });
-
+ 
 /* =====================================================
    URL OPSLAAN (eerste keer)
    ===================================================== */
@@ -325,12 +325,12 @@ document.getElementById('btn-save-url').addEventListener('click', () => {
   saveScriptUrl(url);
   showScreen('screen-login');
 });
-
+ 
 document.getElementById('btn-save-url-admin').addEventListener('click', () => {
   const url = document.getElementById('cfg-url-admin').value.trim();
   if (url) { saveScriptUrl(url); alert('URL opgeslagen.'); }
 });
-
+ 
 /* =====================================================
    NAVIGATIE
    ===================================================== */
@@ -339,7 +339,7 @@ function showScreen(id) {
   document.getElementById(id).classList.add('active');
   window.scrollTo(0, 0);
 }
-
+ 
 function showAdminTab(tab, btn) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
@@ -351,7 +351,7 @@ function showAdminTab(tab, btn) {
     document.getElementById('cfg-url-admin').value = getScriptUrl();
   }
 }
-
+ 
 function logout() {
   userName = ''; isAdmin = false; questions = []; allTerms = [];
   answers = []; currentQ = 0;
@@ -359,7 +359,7 @@ function logout() {
   document.getElementById('inp-name').value = '';
   showScreen('screen-login');
 }
-
+ 
 /* =====================================================
    LOGIN
    ===================================================== */
@@ -367,25 +367,25 @@ document.getElementById('btn-start').addEventListener('click', async () => {
   const code = document.getElementById('inp-code').value.trim();
   const name = document.getElementById('inp-name').value.trim();
   const err  = document.getElementById('login-error');
-
+ 
   if (name.length < 2) { err.style.display = 'block'; return; }
-
+ 
   setLoadingMsg('Inloggen...');
   showScreen('screen-loading');
-
+ 
   try {
     const res = await api('validateCode', { code });
-
+ 
     if (!res.valid) {
       err.style.display = 'block';
       showScreen('screen-login');
       return;
     }
-
+ 
     err.style.display = 'none';
     userName = name;
     isAdmin  = res.role === 'admin';
-
+ 
     if (isAdmin) {
       document.getElementById('admin-subtitle').textContent = `Ingelogd als: ${userName}`;
       showScreen('screen-admin');
@@ -402,7 +402,7 @@ document.getElementById('btn-start').addEventListener('click', async () => {
     showScreen('screen-login');
   }
 });
-
+ 
 /* =====================================================
    VRAGEN LADEN
    ===================================================== */
@@ -415,23 +415,23 @@ async function loadQuestions() {
   }));
   answers = new Array(questions.length).fill(null);
 }
-
+ 
 /* =====================================================
    QUIZ RENDERING
    ===================================================== */
 function renderQuestion() {
   const q = questions[currentQ];
   const n = questions.length;
-
+ 
   document.getElementById('q-num').textContent = `Vraag ${currentQ + 1} van ${n}`;
   document.getElementById('progress-fill').style.width = `${((currentQ + 1) / n) * 100}%`;
   document.getElementById('q-text').textContent = q.question;
-
+ 
   searchInp.value = '';
   dropdown.classList.remove('open');
   dropdown.innerHTML = '';
   searchClear.style.display = 'none';
-
+ 
   const sel = document.getElementById('selected-answer');
   if (answers[currentQ]) {
     sel.classList.add('visible');
@@ -439,27 +439,27 @@ function renderQuestion() {
   } else {
     sel.classList.remove('visible');
   }
-
+ 
   document.getElementById('btn-prev').disabled = currentQ === 0;
   document.getElementById('btn-next').textContent = currentQ === n - 1 ? 'Afronden ✓' : 'Volgende →';
 }
-
+ 
 /* =====================================================
    ZOEKFUNCTIE
    ===================================================== */
 const searchInp   = document.getElementById('search-inp');
 const dropdown    = document.getElementById('dropdown');
 const searchClear = document.getElementById('search-clear');
-
+ 
 searchInp.addEventListener('input', () => {
   const q = searchInp.value.trim();
   searchClear.style.display = q ? 'block' : 'none';
   if (!q) { dropdown.classList.remove('open'); return; }
-
+ 
   const lower   = q.toLowerCase();
   const matches = allTerms.filter(t => t.toLowerCase().includes(lower)).slice(0, 30);
   const usedTerms = answers.map((a,i) => (a && i !== currentQ) ? a.toLowerCase() : null).filter(Boolean);
-
+ 
   if (matches.length === 0) {
     dropdown.innerHTML = '<div class="dropdown-empty">Geen overeenkomsten gevonden</div>';
   } else {
@@ -475,18 +475,18 @@ searchInp.addEventListener('input', () => {
   }
   dropdown.classList.add('open');
 });
-
+ 
 searchClear.addEventListener('click', () => {
   searchInp.value = ''; searchClear.style.display = 'none';
   dropdown.classList.remove('open'); searchInp.focus();
 });
-
+ 
 document.getElementById('btn-clear-answer').addEventListener('click', () => {
   answers[currentQ] = null;
   document.getElementById('selected-answer').classList.remove('visible');
   searchInp.value = ''; searchClear.style.display = 'none';
 });
-
+ 
 function selectAnswer(term) {
   answers[currentQ] = term;
   searchInp.value = ''; searchClear.style.display = 'none';
@@ -494,7 +494,7 @@ function selectAnswer(term) {
   document.getElementById('selected-text').textContent = term;
   document.getElementById('selected-answer').classList.add('visible');
 }
-
+ 
 /* =====================================================
    NAVIGATIE KNOPPEN
    ===================================================== */
@@ -508,18 +508,18 @@ document.getElementById('btn-next').addEventListener('click', () => {
     submitQuiz();
   }
 });
-
+ 
 document.getElementById('btn-prev').addEventListener('click', () => {
   if (currentQ > 0) { currentQ--; renderQuestion(); }
 });
-
+ 
 /* =====================================================
    AFRONDEN & RESULTAAT
    ===================================================== */
 function submitQuiz() {
   const n     = questions.length;
   const score = answers.filter((a,i) => a && a.toLowerCase() === questions[i].answer.toLowerCase()).length;
-
+ 
   document.getElementById('res-score').textContent = score;
   document.getElementById('res-total').textContent = `/${n}`;
   document.getElementById('res-name').textContent  = userName;
@@ -528,7 +528,7 @@ function submitQuiz() {
     score >= n*.7 ? 'Goed gedaan! Nog een paar om te leren.' :
     score >= n*.5 ? 'Redelijk resultaat. Blijf oefenen!'     :
                     'Nog veel te leren — maar je bent begonnen!';
-
+ 
   document.getElementById('answers-review').innerHTML = questions.map((q,i) => {
     const given   = answers[i] || '—';
     const correct = given.toLowerCase() === q.answer.toLowerCase();
@@ -539,18 +539,18 @@ function submitQuiz() {
       ${!correct ? `<p class="correct-show">Juist: ${q.answer}</p>` : ''}
     </div>`;
   }).join('');
-
+ 
   showScreen('screen-result');
   api('saveScore', { name: userName, score, total: n, date: new Date().toLocaleDateString('nl-NL') });
 }
-
+ 
 document.getElementById('btn-restart').addEventListener('click', () => {
   answers  = new Array(questions.length).fill(null);
   currentQ = 0;
   renderQuestion();
   showScreen('screen-quiz');
 });
-
+ 
 /* =====================================================
    ADMIN: SCORES
    ===================================================== */
@@ -573,7 +573,7 @@ async function loadAdminScores() {
   }
 }
 document.getElementById('btn-refresh-scores').addEventListener('click', loadAdminScores);
-
+ 
 /* =====================================================
    ADMIN: INSTELLINGEN
    ===================================================== */
@@ -584,7 +584,7 @@ async function loadConfigIntoForm() {
     document.getElementById('cfg-admincode').value = cfg.adminCode || '';
   } catch(e) {}
 }
-
+ 
 document.getElementById('btn-save-cfg').addEventListener('click', async () => {
   const saved = document.getElementById('cfg-saved');
   try {
@@ -596,7 +596,7 @@ document.getElementById('btn-save-cfg').addEventListener('click', async () => {
     setTimeout(() => saved.style.display = 'none', 2500);
   } catch(e) { alert('Opslaan mislukt.'); }
 });
-
+ 
 /* =====================================================
    ENTER KEY LOGIN
    ===================================================== */
