@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anatomie Toets</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#f5f3ef;--surface:#fff;--surface2:#f0ede8;--text:#1a1714;--muted:#6b6560;
+    --accent:#2d4a8a;--accent-light:#e8edf8;--success:#1a6640;--success-bg:#e8f5ee;
+    --danger:#8a2020;--danger-bg:#f8e8e8;--border:rgba(0,0,0,0.1);
+    --radius:14px;--radius-sm:8px;--shadow:0 2px 12px rgba(0,0,0,0.08);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:160px}
+  header{width:100%;background:var(--accent);padding:16px;text-align:center;position:sticky;top:0;z-index:10}
+  header h1{font-family:'DM Serif Display',serif;color:#fff;font-size:22px;font-weight:400}
+  header p{color:rgba(255,255,255,.7);font-size:13px;margin-top:2px}
+  .screen{width:100%;padding:20px 16px;display:none;flex-direction:column;gap:16px}
+  .screen.active{display:flex}
+  .card{background:var(--surface);border-radius:var(--radius);padding:18px 16px;box-shadow:var(--shadow)}
+  label{font-size:13px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:8px}
+  input[type=text],input[type=password]{width:100%;padding:13px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:16px;font-family:'DM Sans',sans-serif;background:var(--surface2);color:var(--text);outline:none;transition:border-color .2s}
+  input:focus{border-color:var(--accent);background:#fff}
+  .btn{display:block;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:14px 16px;font-size:16px;font-weight:600;font-family:'DM Sans',sans-serif;width:100%;cursor:pointer;transition:opacity .2s,transform .1s;text-align:center}
+  .btn:active{transform:scale(.98)}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn.secondary{background:var(--surface2);color:var(--text);border:1.5px solid var(--border)}
+  .error-msg{background:var(--danger-bg);color:var(--danger);padding:12px 16px;border-radius:var(--radius-sm);font-size:14px;display:none}
+  .progress-bar{width:100%;height:4px;background:var(--surface2);border-radius:99px;overflow:hidden}
+  .progress-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .4s ease}
+  .question-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .question-num{font-size:13px;font-weight:600;color:var(--accent)}
+  .question-text{font-family:'DM Serif Display',serif;font-size:20px;line-height:1.4;color:var(--text);margin:12px 0 16px}
+  .search-wrapper{position:relative;width:100%}
+  .search-wrapper input{padding-right:40px}
+  .search-clear{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:20px;color:var(--muted);cursor:pointer;display:none;padding:4px;line-height:1}
+  .dropdown{background:var(--surface);border:1.5px solid var(--border);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);max-height:240px;overflow-y:auto;display:none;-webkit-overflow-scrolling:touch}
+  .dropdown.open{display:block}
+  .dropdown-item{padding:13px 16px;font-size:15px;cursor:pointer;border-bottom:.5px solid var(--border)}
+  .dropdown-item:last-child{border-bottom:none}
+  .dropdown-item:active{background:var(--accent-light)}
+  .dropdown-item mark{background:none;color:var(--accent);font-weight:600}
+  .dropdown-empty{padding:13px 16px;font-size:14px;color:var(--muted);font-style:italic}
+  .selected-answer{background:var(--accent-light);border:1.5px solid var(--accent);border-radius:var(--radius-sm);padding:12px 16px;font-size:15px;font-weight:500;color:var(--accent);display:none;align-items:center;justify-content:space-between;margin-top:8px}
+  .selected-answer.visible{display:flex}
+  .clear-selection{background:none;border:none;font-size:18px;color:var(--accent);cursor:pointer;padding:0 0 0 8px;flex-shrink:0}
+  .sticky-btn{position:sticky;bottom:0;width:100%;padding:10px 16px 28px;background:var(--bg);border-top:1px solid var(--border);z-index:20;display:flex;flex-direction:column;gap:8px}
+  .sticky-btn .btn{width:100%}
+  .result-score{text-align:center;padding:28px 20px 20px}
+  .score-circle{width:120px;height:120px;border-radius:50%;background:var(--accent-light);border:3px solid var(--accent);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 16px}
+  .score-number{font-family:'DM Serif Display',serif;font-size:42px;color:var(--accent);line-height:1}
+  .score-total{font-size:14px;color:var(--muted);margin-top:2px}
+  .result-name{font-size:18px;font-weight:600;margin-bottom:4px}
+  .result-msg{font-size:14px;color:var(--muted)}
+  .answers-review{display:flex;flex-direction:column;gap:10px}
+  .answer-item{background:var(--surface);border-radius:var(--radius-sm);padding:14px 16px;box-shadow:var(--shadow)}
+  .answer-item .q-label{font-size:12px;color:var(--muted);font-weight:500;margin-bottom:4px}
+  .answer-item .q-text{font-size:14px;color:var(--text);margin-bottom:8px;font-weight:500}
+  .answer-item .given{font-size:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .answer-item .correct-show{font-size:13px;color:var(--success);margin-top:4px}
+  .tag{display:inline-block;padding:2px 8px;border-radius:99px;font-size:12px;font-weight:600}
+  .tag.good{background:var(--success-bg);color:var(--success)}
+  .tag.bad{background:var(--danger-bg);color:var(--danger)}
+  .admin-table-wrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th{background:var(--accent);color:#fff;padding:10px 12px;text-align:left;font-weight:500}
+  td{padding:10px 12px;border-bottom:.5px solid var(--border)}
+  tr:last-child td{border-bottom:none}
+  tr:nth-child(even) td{background:var(--surface2)}
+  .badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:600}
+  .badge.high{background:var(--success-bg);color:var(--success)}
+  .badge.mid{background:#fff8e8;color:#7a5700}
+  .badge.low{background:var(--danger-bg);color:var(--danger)}
+  .loading{text-align:center;padding:40px 20px;color:var(--muted);font-size:15px}
+  .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .section-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);margin-bottom:4px}
+  .section-sub{font-size:14px;color:var(--muted)}
+  .tabs{display:flex;background:var(--surface2);border-radius:var(--radius-sm);padding:3px;margin-bottom:8px}
+  .tab{flex:1;padding:9px;text-align:center;font-size:14px;font-weight:500;cursor:pointer;border-radius:6px;color:var(--muted);border:none;background:none;font-family:'DM Sans',sans-serif;transition:all .2s}
+  .tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+  .info-msg{background:var(--accent-light);color:var(--accent);padding:12px 16px;border-radius:var(--radius-sm);font-size:13px;line-height:1.6}
+  /* Configuratie scherm */
+  #screen-config .card{display:flex;flex-direction:column;gap:14px}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Anatomie Toets</h1>
+  <p>Medische kennistest</p>
+</header>
+
+<!-- SCHERM 0: Eerste keer instellen -->
+<div class="screen active" id="screen-config">
+  <div style="margin-top:8px">
+    <p class="section-title">Instellen</p>
+    <p class="section-sub">Vul eenmalig de Apps Script URL in.</p>
+  </div>
+  <div class="card">
+    <div class="info-msg" style="margin-bottom:14px">
+      Ga naar je Google Sheet → Extensies → Apps Script → Implementeren → Web App URL. Plak die hier.
+    </div>
+    <label>Google Apps Script URL</label>
+    <input type="text" id="cfg-script-url" placeholder="https://script.google.com/macros/s/...">
+    <div style="margin-top:12px">
+      <button class="btn" id="btn-save-url">Opslaan en doorgaan</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCHERM 1: Login -->
+<div class="screen" id="screen-login">
+  <div style="margin-top:8px">
+    <p class="section-title">Welkom</p>
+    <p class="section-sub">Vul je gegevens in om te beginnen.</p>
+  </div>
+  <div class="card" style="gap:14px;display:flex;flex-direction:column">
+    <div>
+      <label for="inp-code">Deelnemerscode</label>
+      <input type="password" id="inp-code" placeholder="Voer je code in" autocomplete="off">
+    </div>
+    <div>
+      <label for="inp-name">Jouw naam</label>
+      <input type="text" id="inp-name" placeholder="Voor- en achternaam" autocomplete="off">
+    </div>
+    <div class="error-msg" id="login-error">Ongeldige code of naam te kort.</div>
+  </div>
+  <div class="sticky-btn">
+    <button class="btn" id="btn-start">Starten</button>
+  </div>
+</div>
+
+<!-- SCHERM 2: Quiz -->
+<div class="screen" id="screen-quiz">
+  <div>
+    <div class="question-header">
+      <span class="question-num" id="q-num">Vraag 1 van 10</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:10%"></div></div>
+  </div>
+  <div class="card">
+    <p class="question-text" id="q-text">Vragen laden...</p>
+    <div class="search-wrapper">
+      <input type="text" id="search-inp" placeholder="Begin met typen om te zoeken..." autocomplete="off" autocorrect="off" spellcheck="false">
+      <button class="search-clear" id="search-clear">×</button>
+    </div>
+    <div class="dropdown" id="dropdown"></div>
+    <div class="selected-answer" id="selected-answer">
+      <span id="selected-text">—</span>
+      <button class="clear-selection" id="btn-clear-answer">×</button>
+    </div>
+  </div>
+  <div class="sticky-btn">
+    <button class="btn" id="btn-next">Volgende →</button>
+    <button class="btn secondary" id="btn-prev">← Vorige</button>
+  </div>
+</div>
+
+<!-- SCHERM 3: Resultaten -->
+<div class="screen" id="screen-result">
+  <div class="card result-score">
+    <div class="score-circle">
+      <span class="score-number" id="res-score">0</span>
+      <span class="score-total" id="res-total">/10</span>
+    </div>
+    <p class="result-name" id="res-name"></p>
+    <p class="result-msg" id="res-msg"></p>
+  </div>
+  <div class="card">
+    <p style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Jouw antwoorden</p>
+    <div class="answers-review" id="answers-review"></div>
+  </div>
+  <div style="padding:0 16px 20px">
+    <button class="btn secondary" id="btn-restart">Opnieuw proberen</button>
+  </div>
+</div>
+
+<!-- SCHERM 4: Admin -->
+<div class="screen" id="screen-admin">
+  <div>
+    <p class="section-title">Beheerderspaneel</p>
+    <p class="section-sub" id="admin-subtitle"></p>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="showAdminTab('scores',this)">Scores</button>
+    <button class="tab" onclick="showAdminTab('config',this)">Instellingen</button>
+  </div>
+  <div id="admin-scores">
+    <div class="card">
+      <div class="loading" id="admin-loading"><div class="spinner"></div>Scores laden...</div>
+      <div class="admin-table-wrap" id="scores-table" style="display:none">
+        <table><thead><tr><th>Naam</th><th>Score</th><th>Datum</th></tr></thead>
+        <tbody id="scores-tbody"></tbody></table>
+      </div>
+    </div>
+    <button class="btn secondary" id="btn-refresh-scores">Vernieuwen</button>
+  </div>
+  <div id="admin-config" style="display:none">
+    <div class="card" style="display:flex;flex-direction:column;gap:14px">
+      <div class="info-msg">Codes worden opgeslagen in het tabblad "Instellingen" van je Google Sheet.</div>
+      <div>
+        <label>Deelnemerscode(s) — kommagescheiden</label>
+        <input type="text" id="cfg-codes" placeholder="code1, code2, code3">
+      </div>
+      <div>
+        <label>Beheerdersscode</label>
+        <input type="text" id="cfg-admincode" placeholder="admin123">
+      </div>
+      <button class="btn" id="btn-save-cfg">Opslaan in Sheet</button>
+      <p style="font-size:12px;color:var(--success);display:none" id="cfg-saved">Opgeslagen.</p>
+    </div>
+    <div class="card" style="margin-top:12px;display:flex;flex-direction:column;gap:10px">
+      <p style="font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Apps Script URL</p>
+      <input type="text" id="cfg-url-admin" placeholder="https://script.google.com/macros/s/...">
+      <button class="btn secondary" id="btn-save-url-admin">URL bijwerken</button>
+    </div>
+  </div>
+  <button class="btn secondary" style="margin:0 16px" onclick="logout()">Uitloggen</button>
+</div>
+
+<!-- SCHERM 5: Laden -->
+<div class="screen" id="screen-loading">
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;gap:16px;padding:20px">
+    <div class="spinner"></div>
+    <p id="loading-msg" style="font-size:16px;color:var(--muted);text-align:center;font-weight:500">Laden...</p>
+    <p style="font-size:13px;color:var(--muted);text-align:center;opacity:.7">Even geduld, dit duurt enkele seconden</p>
+  </div>
+</div>
+
+<script>
+/* =====================================================
+   CONFIGURATIE — Apps Script URL opgeslagen in localStorage
+   ===================================================== */
+const STORAGE_KEY = 'anatomie_script_url';
+
+function getScriptUrl() {
+  return localStorage.getItem(STORAGE_KEY) || '';
+}
+
+function saveScriptUrl(url) {
+  localStorage.setItem(STORAGE_KEY, url.trim());
+}
+
+/* =====================================================
+   API via fetch naar Google Apps Script
+   Apps Script doGet verwerkt de actie via ?action=...
+   ===================================================== */
+async function api(action, data, maxRetries = 3) {
+  const url = getScriptUrl();
+  if (!url) throw new Error('Geen Apps Script URL ingesteld');
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      setLoadingMsg(attempt > 1 ? 'Poging ' + attempt + ' van ' + maxRetries + '...' : 'Laden...');
+
+      const params = new URLSearchParams({ action, ...flattenData(data) });
+      const response = await fetch(url + '?' + params, {
+        method: 'GET',
+        redirect: 'follow'
+      });
+
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      const result = await response.json();
+      if (result && result.error) throw new Error(result.error);
+      return result;
+
+    } catch (e) {
+      if (attempt === maxRetries) throw e;
+      await new Promise(r => setTimeout(r, attempt * 1000));
+    }
+  }
+}
+
+// Zet geneste data plat voor URL params
+function flattenData(data) {
+  if (!data) return {};
+  const out = {};
+  Object.keys(data).forEach(k => {
+    out[k] = typeof data[k] === 'object' ? JSON.stringify(data[k]) : data[k];
+  });
+  return out;
+}
+
+function setLoadingMsg(msg) {
+  const el = document.getElementById('loading-msg');
+  if (el) el.textContent = msg;
+}
+
+/* =====================================================
+   APP STATE
+   ===================================================== */
+let questions = [];
+let allTerms  = [];
+let answers   = [];
+let currentQ  = 0;
+let userName  = '';
+let isAdmin   = false;
+
+/* =====================================================
+   OPSTARTEN — check of URL al ingesteld is
+   ===================================================== */
+window.addEventListener('load', () => {
+  const url = getScriptUrl();
+  if (url) {
+    document.getElementById('cfg-script-url').value = url;
+    showScreen('screen-login');
+  } else {
+    showScreen('screen-config');
+  }
+});
+
+/* =====================================================
+   URL OPSLAAN (eerste keer)
+   ===================================================== */
+document.getElementById('btn-save-url').addEventListener('click', () => {
+  const url = document.getElementById('cfg-script-url').value.trim();
+  if (!url.startsWith('https://script.google.com')) {
+    alert('Voer een geldige Google Apps Script URL in.');
+    return;
+  }
+  saveScriptUrl(url);
+  showScreen('screen-login');
+});
+
+document.getElementById('btn-save-url-admin').addEventListener('click', () => {
+  const url = document.getElementById('cfg-url-admin').value.trim();
+  if (url) { saveScriptUrl(url); alert('URL opgeslagen.'); }
+});
+
+/* =====================================================
+   NAVIGATIE
+   ===================================================== */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function showAdminTab(tab, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('admin-scores').style.display = tab === 'scores' ? '' : 'none';
+  document.getElementById('admin-config').style.display = tab === 'config' ? '' : 'none';
+  if (tab === 'scores') loadAdminScores();
+  if (tab === 'config') {
+    loadConfigIntoForm();
+    document.getElementById('cfg-url-admin').value = getScriptUrl();
+  }
+}
+
+function logout() {
+  userName = ''; isAdmin = false; questions = []; allTerms = [];
+  answers = []; currentQ = 0;
+  document.getElementById('inp-code').value = '';
+  document.getElementById('inp-name').value = '';
+  showScreen('screen-login');
+}
+
+/* =====================================================
+   LOGIN
+   ===================================================== */
+document.getElementById('btn-start').addEventListener('click', async () => {
+  const code = document.getElementById('inp-code').value.trim();
+  const name = document.getElementById('inp-name').value.trim();
+  const err  = document.getElementById('login-error');
+
+  if (name.length < 2) { err.style.display = 'block'; return; }
+
+  setLoadingMsg('Inloggen...');
+  showScreen('screen-loading');
+
+  try {
+    const res = await api('validateCode', { code });
+
+    if (!res.valid) {
+      err.style.display = 'block';
+      showScreen('screen-login');
+      return;
+    }
+
+    err.style.display = 'none';
+    userName = name;
+    isAdmin  = res.role === 'admin';
+
+    if (isAdmin) {
+      document.getElementById('admin-subtitle').textContent = `Ingelogd als: ${userName}`;
+      showScreen('screen-admin');
+      loadAdminScores();
+    } else {
+      setLoadingMsg('Vragen laden...');
+      await loadQuestions();
+      renderQuestion();
+      showScreen('screen-quiz');
+    }
+  } catch (e) {
+    err.textContent = 'Verbindingsfout. Controleer de URL in instellingen en probeer opnieuw.';
+    err.style.display = 'block';
+    showScreen('screen-login');
+  }
+});
+
+/* =====================================================
+   VRAGEN LADEN
+   ===================================================== */
+async function loadQuestions() {
+  const data = await api('getQuestions');
+  allTerms   = data.terms || [];
+  questions  = (data.questions || []).map(d => ({
+    question: `Wat is het antwoord op vraag ${d.vraagnummer}?`,
+    answer: d.term
+  }));
+  answers = new Array(questions.length).fill(null);
+}
+
+/* =====================================================
+   QUIZ RENDERING
+   ===================================================== */
+function renderQuestion() {
+  const q = questions[currentQ];
+  const n = questions.length;
+
+  document.getElementById('q-num').textContent = `Vraag ${currentQ + 1} van ${n}`;
+  document.getElementById('progress-fill').style.width = `${((currentQ + 1) / n) * 100}%`;
+  document.getElementById('q-text').textContent = q.question;
+
+  searchInp.value = '';
+  dropdown.classList.remove('open');
+  dropdown.innerHTML = '';
+  searchClear.style.display = 'none';
+
+  const sel = document.getElementById('selected-answer');
+  if (answers[currentQ]) {
+    sel.classList.add('visible');
+    document.getElementById('selected-text').textContent = answers[currentQ];
+  } else {
+    sel.classList.remove('visible');
+  }
+
+  document.getElementById('btn-prev').disabled = currentQ === 0;
+  document.getElementById('btn-next').textContent = currentQ === n - 1 ? 'Afronden ✓' : 'Volgende →';
+}
+
+/* =====================================================
+   ZOEKFUNCTIE
+   ===================================================== */
+const searchInp   = document.getElementById('search-inp');
+const dropdown    = document.getElementById('dropdown');
+const searchClear = document.getElementById('search-clear');
+
+searchInp.addEventListener('input', () => {
+  const q = searchInp.value.trim();
+  searchClear.style.display = q ? 'block' : 'none';
+  if (!q) { dropdown.classList.remove('open'); return; }
+
+  const lower   = q.toLowerCase();
+  const matches = allTerms.filter(t => t.toLowerCase().includes(lower)).slice(0, 30);
+  const usedTerms = answers.map((a,i) => (a && i !== currentQ) ? a.toLowerCase() : null).filter(Boolean);
+
+  if (matches.length === 0) {
+    dropdown.innerHTML = '<div class="dropdown-empty">Geen overeenkomsten gevonden</div>';
+  } else {
+    dropdown.innerHTML = matches.map(term => {
+      const isUsed = usedTerms.includes(term.toLowerCase());
+      const idx = term.toLowerCase().indexOf(lower);
+      const hi  = term.slice(0,idx) + '<mark>' + term.slice(idx, idx+q.length) + '</mark>' + term.slice(idx+q.length);
+      if (isUsed) {
+        return `<div class="dropdown-item" style="opacity:.4;cursor:not-allowed;pointer-events:none;display:flex;justify-content:space-between;"><span>${hi}</span><span style="font-size:11px;margin-left:8px">al gebruikt</span></div>`;
+      }
+      return `<div class="dropdown-item" onclick="selectAnswer('${term.replace(/'/g,"\\'")}')"><span>${hi}</span></div>`;
+    }).join('');
+  }
+  dropdown.classList.add('open');
+});
+
+searchClear.addEventListener('click', () => {
+  searchInp.value = ''; searchClear.style.display = 'none';
+  dropdown.classList.remove('open'); searchInp.focus();
+});
+
+document.getElementById('btn-clear-answer').addEventListener('click', () => {
+  answers[currentQ] = null;
+  document.getElementById('selected-answer').classList.remove('visible');
+  searchInp.value = ''; searchClear.style.display = 'none';
+});
+
+function selectAnswer(term) {
+  answers[currentQ] = term;
+  searchInp.value = ''; searchClear.style.display = 'none';
+  dropdown.classList.remove('open'); dropdown.innerHTML = '';
+  document.getElementById('selected-text').textContent = term;
+  document.getElementById('selected-answer').classList.add('visible');
+}
+
+/* =====================================================
+   NAVIGATIE KNOPPEN
+   ===================================================== */
+document.getElementById('btn-next').addEventListener('click', () => {
+  if (currentQ < questions.length - 1) { currentQ++; renderQuestion(); }
+  else {
+    const missing = answers.filter(a => !a).length;
+    if (missing > 0) {
+      if (!confirm(`Je hebt nog ${missing} vraag/vragen niet ingevuld. Toch afronden?`)) return;
+    }
+    submitQuiz();
+  }
+});
+
+document.getElementById('btn-prev').addEventListener('click', () => {
+  if (currentQ > 0) { currentQ--; renderQuestion(); }
+});
+
+/* =====================================================
+   AFRONDEN & RESULTAAT
+   ===================================================== */
+function submitQuiz() {
+  const n     = questions.length;
+  const score = answers.filter((a,i) => a && a.toLowerCase() === questions[i].answer.toLowerCase()).length;
+
+  document.getElementById('res-score').textContent = score;
+  document.getElementById('res-total').textContent = `/${n}`;
+  document.getElementById('res-name').textContent  = userName;
+  document.getElementById('res-msg').textContent   =
+    score === n ? 'Perfecte score! Uitstekend werk.'        :
+    score >= n*.7 ? 'Goed gedaan! Nog een paar om te leren.' :
+    score >= n*.5 ? 'Redelijk resultaat. Blijf oefenen!'     :
+                    'Nog veel te leren — maar je bent begonnen!';
+
+  document.getElementById('answers-review').innerHTML = questions.map((q,i) => {
+    const given   = answers[i] || '—';
+    const correct = given.toLowerCase() === q.answer.toLowerCase();
+    return `<div class="answer-item">
+      <p class="q-label">Vraag ${i+1}</p>
+      <p class="q-text">${q.question}</p>
+      <p class="given"><span class="tag ${correct?'good':'bad'}">${correct?'✓':'✗'}</span> ${given}</p>
+      ${!correct ? `<p class="correct-show">Juist: ${q.answer}</p>` : ''}
+    </div>`;
+  }).join('');
+
+  showScreen('screen-result');
+  api('saveScore', { name: userName, score, total: n, date: new Date().toLocaleDateString('nl-NL') });
+}
+
+document.getElementById('btn-restart').addEventListener('click', () => {
+  answers  = new Array(questions.length).fill(null);
+  currentQ = 0;
+  renderQuestion();
+  showScreen('screen-quiz');
+});
+
+/* =====================================================
+   ADMIN: SCORES
+   ===================================================== */
+async function loadAdminScores() {
+  const loading = document.getElementById('admin-loading');
+  const table   = document.getElementById('scores-table');
+  const tbody   = document.getElementById('scores-tbody');
+  loading.innerHTML = '<div class="spinner"></div>Scores laden...';
+  loading.style.display = 'block'; table.style.display = 'none';
+  try {
+    const data = await api('getScores');
+    tbody.innerHTML = (data||[]).map(row => {
+      const pct = row.score/row.total;
+      const cls = pct>=.7?'high':pct>=.5?'mid':'low';
+      return `<tr><td>${row.name}</td><td><span class="badge ${cls}">${row.score}/${row.total}</span></td><td>${row.date}</td></tr>`;
+    }).join('') || '<tr><td colspan="3" style="color:var(--muted)">Nog geen scores</td></tr>';
+    loading.style.display = 'none'; table.style.display = '';
+  } catch(e) {
+    loading.innerHTML = '<p style="color:var(--danger);font-size:14px;">Kon scores niet laden.</p>';
+  }
+}
+document.getElementById('btn-refresh-scores').addEventListener('click', loadAdminScores);
+
+/* =====================================================
+   ADMIN: INSTELLINGEN
+   ===================================================== */
+async function loadConfigIntoForm() {
+  try {
+    const cfg = await api('getConfig');
+    document.getElementById('cfg-codes').value     = cfg.codes     || '';
+    document.getElementById('cfg-admincode').value = cfg.adminCode || '';
+  } catch(e) {}
+}
+
+document.getElementById('btn-save-cfg').addEventListener('click', async () => {
+  const saved = document.getElementById('cfg-saved');
+  try {
+    await api('saveConfig', {
+      codes:     document.getElementById('cfg-codes').value.trim(),
+      adminCode: document.getElementById('cfg-admincode').value.trim()
+    });
+    saved.style.display = 'block';
+    setTimeout(() => saved.style.display = 'none', 2500);
+  } catch(e) { alert('Opslaan mislukt.'); }
+});
+
+/* =====================================================
+   ENTER KEY LOGIN
+   ===================================================== */
+['inp-code','inp-name'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('btn-start').click();
+  });
+});
+</script>
+</body>
+</html>
