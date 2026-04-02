@@ -206,7 +206,7 @@
    CONFIGURATIE
    Vul hieronder de Apps Script URL in.
    ===================================================== */
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFZjy8pdfJc6LZaHwkMsUbLFHOALq-4z8M0zRPFi0fuOaE5Ek3hETv3d4Bqd26oefa/exec';
+const SCRIPT_URL = 'JOUW_APPS_SCRIPT_URL_HIER';
  
 const VRAGEN_PER_RONDE = 6;
 const AANTAL_RONDES    = 4;
@@ -376,7 +376,7 @@ function renderVraag() {
   document.getElementById('progress-fill').style.width =
     `${((huidigeVraag + 1) / VRAGEN_PER_RONDE) * 100}%`;
   document.getElementById('q-text').textContent =
-    `Was ist die Antwort auf Frage ${vraag.vraagnummer}?`;
+    `Welche Struktur ist Label ${vraag.vraagnummer}?`;
  
   // Zoekbalk resetten
   searchInp.value = '';
