@@ -54,14 +54,14 @@
   .clear-selection{background:none;border:none;font-size:18px;color:var(--accent);cursor:pointer;padding:0 0 0 8px;flex-shrink:0}
   .sticky-btn{position:sticky;bottom:0;width:100%;padding:10px 16px 28px;background:var(--bg);border-top:1px solid var(--border);z-index:20;display:flex;flex-direction:column;gap:8px}
   .sticky-btn .btn{width:100%}
-
+ 
   /* Tussenscherm ronde klaar */
   .ronde-klaar-card{text-align:center;padding:32px 20px}
   .ronde-klaar-card .icon{font-size:48px;margin-bottom:16px}
   .ronde-klaar-card h2{font-family:'DM Serif Display',serif;font-size:24px;margin-bottom:8px;color:var(--text)}
   .ronde-klaar-card p{font-size:15px;color:var(--muted);line-height:1.6;margin-bottom:20px}
   .tafel-badge{display:inline-block;background:var(--accent);color:#fff;border-radius:99px;padding:6px 20px;font-size:16px;font-weight:600;margin-bottom:20px}
-
+ 
   /* Resultaten */
   .result-score{text-align:center;padding:28px 20px 20px}
   .score-circle{width:130px;height:130px;border-radius:50%;background:var(--accent-light);border:3px solid var(--accent);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 16px}
@@ -84,7 +84,7 @@
   .score-ronde-card{background:var(--surface);border-radius:var(--radius-sm);padding:12px 8px;text-align:center;box-shadow:var(--shadow)}
   .score-ronde-card .label{font-size:11px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
   .score-ronde-card .value{font-size:20px;font-weight:600;color:var(--accent)}
-
+ 
   /* Loading */
   .loading{text-align:center;padding:40px 20px;color:var(--muted);font-size:15px}
   .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
@@ -95,30 +95,14 @@
 </style>
 </head>
 <body>
-
+ 
 <header>
   <h1>Anatomie Toets</h1>
   <p id="header-sub">Rondes quiz</p>
 </header>
-
-<!-- SCHERM 0: Eerste keer URL instellen -->
-<div class="screen active" id="screen-config">
-  <div style="margin-top:8px">
-    <p class="section-title">Instellen</p>
-    <p class="section-sub">Vul eenmalig de Apps Script URL in.</p>
-  </div>
-  <div class="card" style="display:flex;flex-direction:column;gap:14px">
-    <div class="info-msg">Ga naar je Google Sheet → Extensies → Apps Script → Implementeren → Web App URL. Plak die hier.</div>
-    <div>
-      <label>Google Apps Script URL</label>
-      <input type="text" id="cfg-script-url" placeholder="https://script.google.com/macros/s/...">
-    </div>
-    <button class="btn" id="btn-save-url">Opslaan en doorgaan</button>
-  </div>
-</div>
-
+ 
 <!-- SCHERM 1: Login -->
-<div class="screen" id="screen-login">
+<div class="screen active" id="screen-login">
   <div style="margin-top:8px">
     <p class="section-title">Welkom</p>
     <p class="section-sub">Vul je naam en tafelnummer in.</p>
@@ -144,7 +128,7 @@
     <button class="btn" id="btn-start">Starten</button>
   </div>
 </div>
-
+ 
 <!-- SCHERM 2: Quiz -->
 <div class="screen" id="screen-quiz">
   <div>
@@ -174,7 +158,7 @@
     <button class="btn secondary" id="btn-prev">← Vorige</button>
   </div>
 </div>
-
+ 
 <!-- SCHERM 3: Tussenscherm ronde klaar -->
 <div class="screen" id="screen-ronde-klaar">
   <div class="card ronde-klaar-card">
@@ -187,7 +171,7 @@
     <button class="btn success" id="btn-volgende-ronde">Volgende ronde starten →</button>
   </div>
 </div>
-
+ 
 <!-- SCHERM 4: Eindresultaat -->
 <div class="screen" id="screen-result">
   <div class="card result-score">
@@ -198,16 +182,16 @@
     <p class="result-name" id="res-name"></p>
     <p class="result-msg" id="res-msg"></p>
   </div>
-
+ 
   <div class="score-per-ronde" id="score-per-ronde"></div>
-
+ 
   <div id="answers-per-ronde"></div>
-
+ 
   <div style="padding:0 0 20px">
     <button class="btn secondary" id="btn-restart">Opnieuw beginnen</button>
   </div>
 </div>
-
+ 
 <!-- SCHERM 5: Laden -->
 <div class="screen" id="screen-loading">
   <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;gap:16px;padding:20px">
@@ -216,26 +200,27 @@
     <p style="font-size:13px;color:var(--muted);text-align:center;opacity:.7">Even geduld, dit duurt enkele seconden</p>
   </div>
 </div>
-
+ 
 <script>
 /* =====================================================
    CONFIGURATIE
+   Vul hieronder de Apps Script URL in.
    ===================================================== */
-const STORAGE_KEY = 'anatomie4_script_url';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFZjy8pdfJc6LZaHwkMsUbLFHOALq-4z8M0zRPFi0fuOaE5Ek3hETv3d4Bqd26oefa/exec';
+ 
 const VRAGEN_PER_RONDE = 6;
 const AANTAL_RONDES    = 4;
 const TOTAAL_VRAGEN    = VRAGEN_PER_RONDE * AANTAL_RONDES; // 24
-
-function getScriptUrl() { return localStorage.getItem(STORAGE_KEY) || ''; }
-function saveScriptUrl(url) { localStorage.setItem(STORAGE_KEY, url.trim()); }
-
+ 
+function getScriptUrl() { return SCRIPT_URL; }
+ 
 /* =====================================================
    API via fetch
    ===================================================== */
 async function api(action, data, maxRetries = 3) {
   const url = getScriptUrl();
   if (!url) throw new Error('Geen Apps Script URL ingesteld');
-
+ 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       setLoadingMsg(attempt > 1 ? 'Poging ' + attempt + ' van ' + maxRetries + '...' : 'Laden...');
@@ -251,19 +236,19 @@ async function api(action, data, maxRetries = 3) {
     }
   }
 }
-
+ 
 function flatten(data) {
   if (!data) return {};
   const out = {};
   Object.keys(data).forEach(k => { out[k] = typeof data[k] === 'object' ? JSON.stringify(data[k]) : data[k]; });
   return out;
 }
-
+ 
 function setLoadingMsg(msg) {
   const el = document.getElementById('loading-msg');
   if (el) el.textContent = msg;
 }
-
+ 
 /* =====================================================
    APP STATE
    ===================================================== */
@@ -275,7 +260,7 @@ let huidigeRonde = 0;   // 0-3
 let huidigeVraag = 0;   // 0-5 binnen de ronde
 let userName    = '';
 let starttafel  = 0;
-
+ 
 /* =====================================================
    RONDE VOLGORDE BEREKENEN
    Starttafel 1 → rondes [0,1,2,3] (vragen 1-6, 7-12, 13-18, 19-24)
@@ -293,35 +278,19 @@ function berekenRondeVolgorde(tafel) {
   }
   return volgorde;
 }
-
+ 
 function tafelnummerVoorRonde(ronde) {
   // Welke tafel hoort bij deze ronde voor deze student?
   return ((starttafel - 1 + ronde) % AANTAL_RONDES) + 1;
 }
-
+ 
 /* =====================================================
    OPSTARTEN
    ===================================================== */
 window.addEventListener('load', () => {
-  const url = getScriptUrl();
-  if (url) {
-    document.getElementById('cfg-script-url').value = url;
-    showScreen('screen-login');
-  } else {
-    showScreen('screen-config');
-  }
-});
-
-document.getElementById('btn-save-url').addEventListener('click', () => {
-  const url = document.getElementById('cfg-script-url').value.trim();
-  if (!url.startsWith('https://script.google.com')) {
-    alert('Voer een geldige Google Apps Script URL in.');
-    return;
-  }
-  saveScriptUrl(url);
   showScreen('screen-login');
 });
-
+ 
 /* =====================================================
    NAVIGATIE
    ===================================================== */
@@ -330,7 +299,7 @@ function showScreen(id) {
   document.getElementById(id).classList.add('active');
   window.scrollTo(0, 0);
 }
-
+ 
 /* =====================================================
    LOGIN
    ===================================================== */
@@ -338,47 +307,47 @@ document.getElementById('btn-start').addEventListener('click', async () => {
   const name  = document.getElementById('inp-name').value.trim();
   const tafel = parseInt(document.getElementById('inp-tafel').value);
   const err   = document.getElementById('login-error');
-
+ 
   if (name.length < 2 || !tafel) { err.style.display = 'block'; return; }
   err.style.display = 'none';
-
+ 
   setLoadingMsg('Vragen laden...');
   showScreen('screen-loading');
-
+ 
   try {
     const data = await api('getQuestions');
     allTerms   = data.terms    || [];
     allVragen  = data.questions || [];
-
+ 
     if (allVragen.length < TOTAAL_VRAGEN) {
       alert(`Er zijn maar ${allVragen.length} van de ${TOTAAL_VRAGEN} vragen ingesteld in de sheet.`);
       showScreen('screen-login');
       return;
     }
-
+ 
     userName       = name;
     starttafel     = tafel;
     huidigeRonde   = 0;
     huidigeVraag   = 0;
     antwoorden     = new Array(TOTAAL_VRAGEN).fill(null);
     rondeVolgorde  = berekenRondeVolgorde(tafel);
-
+ 
     updateHeaderSub();
     renderRondeIndicator();
     renderVraag();
     showScreen('screen-quiz');
-
+ 
   } catch (e) {
     alert('Verbindingsfout. Controleer de URL en probeer opnieuw.');
     showScreen('screen-login');
   }
 });
-
+ 
 function updateHeaderSub() {
   document.getElementById('header-sub').textContent =
     `${userName} — Tafel ${tafelnummerVoorRonde(huidigeRonde)}`;
 }
-
+ 
 /* =====================================================
    RONDE INDICATOR (4 bolletjes bovenaan)
    ===================================================== */
@@ -389,7 +358,7 @@ function renderRondeIndicator() {
     return `<div class="ronde-dot ${cls}"></div>`;
   }).join('');
 }
-
+ 
 /* =====================================================
    VRAAG RENDEREN
    ===================================================== */
@@ -397,7 +366,7 @@ function renderVraag() {
   const rondeVragen = rondeVolgorde[huidigeRonde];
   const vraag       = rondeVragen[huidigeVraag];
   const totaalIdx   = huidigeRonde * VRAGEN_PER_RONDE + huidigeVraag; // globale index voor antwoorden[]
-
+ 
   // Voortgang over alle 24 vragen
   const globaalVraagnr = totaalIdx + 1;
   document.getElementById('q-num').textContent =
@@ -408,13 +377,13 @@ function renderVraag() {
     `${((huidigeVraag + 1) / VRAGEN_PER_RONDE) * 100}%`;
   document.getElementById('q-text').textContent =
     `Wat is het antwoord op vraag ${vraag.vraagnummer}?`;
-
+ 
   // Zoekbalk resetten
   searchInp.value = '';
   dropdown.classList.remove('open');
   dropdown.innerHTML = '';
   searchClear.style.display = 'none';
-
+ 
   // Geselecteerd antwoord tonen
   const sel = document.getElementById('selected-answer');
   if (antwoorden[totaalIdx]) {
@@ -423,35 +392,35 @@ function renderVraag() {
   } else {
     sel.classList.remove('visible');
   }
-
+ 
   document.getElementById('btn-prev').disabled = huidigeVraag === 0;
   document.getElementById('btn-next').textContent =
     huidigeVraag === VRAGEN_PER_RONDE - 1 ? 'Ronde afronden ✓' : 'Volgende →';
-
+ 
   updateHeaderSub();
   renderRondeIndicator();
 }
-
+ 
 /* =====================================================
    ZOEKFUNCTIE
    ===================================================== */
 const searchInp   = document.getElementById('search-inp');
 const dropdown    = document.getElementById('dropdown');
 const searchClear = document.getElementById('search-clear');
-
+ 
 searchInp.addEventListener('input', () => {
   const q = searchInp.value.trim();
   searchClear.style.display = q ? 'block' : 'none';
   if (!q) { dropdown.classList.remove('open'); return; }
-
+ 
   const lower = q.toLowerCase();
   const matches = allTerms.filter(t => t.toLowerCase().includes(lower)).slice(0, 30);
-
+ 
   // Welke termen al gebruikt in andere vragen
   const usedTerms = antwoorden
     .map((a, i) => (a && i !== huidigeRonde * VRAGEN_PER_RONDE + huidigeVraag) ? a.toLowerCase() : null)
     .filter(Boolean);
-
+ 
   if (matches.length === 0) {
     dropdown.innerHTML = '<div class="dropdown-empty">Geen overeenkomsten gevonden</div>';
   } else {
@@ -467,19 +436,19 @@ searchInp.addEventListener('input', () => {
   }
   dropdown.classList.add('open');
 });
-
+ 
 searchClear.addEventListener('click', () => {
   searchInp.value = ''; searchClear.style.display = 'none';
   dropdown.classList.remove('open'); searchInp.focus();
 });
-
+ 
 document.getElementById('btn-clear-answer').addEventListener('click', () => {
   const idx = huidigeRonde * VRAGEN_PER_RONDE + huidigeVraag;
   antwoorden[idx] = null;
   document.getElementById('selected-answer').classList.remove('visible');
   searchInp.value = ''; searchClear.style.display = 'none';
 });
-
+ 
 function selectAnswer(term) {
   const idx = huidigeRonde * VRAGEN_PER_RONDE + huidigeVraag;
   antwoorden[idx] = term;
@@ -488,7 +457,7 @@ function selectAnswer(term) {
   document.getElementById('selected-text').textContent = term;
   document.getElementById('selected-answer').classList.add('visible');
 }
-
+ 
 /* =====================================================
    NAVIGATIE KNOPPEN
    ===================================================== */
@@ -509,11 +478,11 @@ document.getElementById('btn-next').addEventListener('click', () => {
     rondeAfronden();
   }
 });
-
+ 
 document.getElementById('btn-prev').addEventListener('click', () => {
   if (huidigeVraag > 0) { huidigeVraag--; renderVraag(); }
 });
-
+ 
 /* =====================================================
    RONDE AFRONDEN
    ===================================================== */
@@ -523,33 +492,33 @@ function rondeAfronden() {
   const rondeScore    = antwoorden
     .slice(startIdx, startIdx + VRAGEN_PER_RONDE)
     .filter((a, i) => a && a.toLowerCase() === rondeVragen[i].term.toLowerCase()).length;
-
+ 
   const isLaatsteRonde = huidigeRonde === AANTAL_RONDES - 1;
-
+ 
   if (isLaatsteRonde) {
     toonEindresultaat();
     return;
   }
-
+ 
   // Tussenscherm
   const volgendeRonde  = huidigeRonde + 1;
   const volgendeTafel  = tafelnummerVoorRonde(volgendeRonde);
-
+ 
   document.getElementById('ronde-klaar-titel').textContent   = `Ronde ${huidigeRonde + 1} klaar!`;
   document.getElementById('ronde-klaar-score').textContent    = `${rondeScore} van ${VRAGEN_PER_RONDE} goed`;
   document.getElementById('ronde-klaar-tekst').textContent    = `Schuif nu door naar de volgende tafel en druk op starten als je er klaar voor bent.`;
   document.getElementById('ronde-klaar-volgende').textContent = `Volgende tafel: Tafel ${volgendeTafel}`;
-
+ 
   showScreen('screen-ronde-klaar');
 }
-
+ 
 document.getElementById('btn-volgende-ronde').addEventListener('click', () => {
   huidigeRonde++;
   huidigeVraag = 0;
   renderVraag();
   showScreen('screen-quiz');
 });
-
+ 
 /* =====================================================
    EINDRESULTAAT
    ===================================================== */
@@ -557,7 +526,7 @@ function toonEindresultaat() {
   const totaal = TOTAAL_VRAGEN;
   let totalScore = 0;
   const rondeScores = [];
-
+ 
   for (let r = 0; r < AANTAL_RONDES; r++) {
     const startIdx    = r * VRAGEN_PER_RONDE;
     const rondeVragen = rondeVolgorde[r];
@@ -567,7 +536,7 @@ function toonEindresultaat() {
     rondeScores.push(score);
     totalScore += score;
   }
-
+ 
   document.getElementById('res-score').textContent = totalScore;
   document.getElementById('res-total').textContent = `/${totaal}`;
   document.getElementById('res-name').textContent  = userName;
@@ -576,7 +545,7 @@ function toonEindresultaat() {
     totalScore >= totaal*.75  ? 'Heel goed gedaan!'                        :
     totalScore >= totaal*.5   ? 'Redelijk resultaat. Blijf oefenen!'       :
                                 'Nog veel te leren — maar je bent begonnen!';
-
+ 
   // Score per ronde kaartjes
   document.getElementById('score-per-ronde').innerHTML = rondeScores.map((s, r) =>
     `<div class="score-ronde-card">
@@ -584,7 +553,7 @@ function toonEindresultaat() {
       <div class="value">${s}/${VRAGEN_PER_RONDE}</div>
     </div>`
   ).join('');
-
+ 
   // Antwoorden per ronde
   document.getElementById('answers-per-ronde').innerHTML = Array.from({length: AANTAL_RONDES}, (_, r) => {
     const startIdx    = r * VRAGEN_PER_RONDE;
@@ -604,9 +573,9 @@ function toonEindresultaat() {
       <div class="answers-review" style="margin-bottom:16px">${items}</div>
     </div>`;
   }).join('');
-
+ 
   showScreen('screen-result');
-
+ 
   // Score opslaan
   api('saveScore', {
     name:       userName,
@@ -616,13 +585,13 @@ function toonEindresultaat() {
     date:       new Date().toLocaleDateString('nl-NL')
   });
 }
-
+ 
 document.getElementById('btn-restart').addEventListener('click', () => {
   document.getElementById('inp-name').value  = '';
   document.getElementById('inp-tafel').value = '';
   showScreen('screen-login');
 });
-
+ 
 /* =====================================================
    ENTER KEY LOGIN
    ===================================================== */
