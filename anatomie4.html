@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Anatomie4 Toets</title>
+<title>Anatomie4 Test</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -97,32 +97,32 @@
 <body>
  
 <header>
-  <h1>Anatomie Toets</h1>
-  <p id="header-sub">Rondes quiz</p>
+  <h1>Anatomie Test</h1>
+  <p id="header-sub">Runden Quiz</p>
 </header>
  
 <!-- SCHERM 1: Login -->
 <div class="screen active" id="screen-login">
   <div style="margin-top:8px">
-    <p class="section-title">Welkom</p>
-    <p class="section-sub">Vul je naam en tafelnummer in.</p>
+    <p class="section-title">Willkommen</p>
+    <p class="section-sub">Gib deinen Namen und deine Tischnummer ein.</p>
   </div>
   <div class="card" style="display:flex;flex-direction:column;gap:14px">
     <div>
-      <label for="inp-name">Jouw naam</label>
-      <input type="text" id="inp-name" placeholder="Voor- en achternaam" autocomplete="off">
+      <label for="inp-name">Dein Name</label>
+      <input type="text" id="inp-name" placeholder="Vor- und Nachname" autocomplete="off">
     </div>
     <div>
-      <label for="inp-tafel">Mijn starttafel</label>
+      <label for="inp-tafel">Mein Starttisch</label>
       <select id="inp-tafel">
-        <option value="">— Kies jouw tafel —</option>
-        <option value="1">Tafel 1</option>
-        <option value="2">Tafel 2</option>
-        <option value="3">Tafel 3</option>
-        <option value="4">Tafel 4</option>
+        <option value="">— Wähle deinen Tisch —</option>
+        <option value="1">Tisch 1</option>
+        <option value="2">Tisch 2</option>
+        <option value="3">Tisch 3</option>
+        <option value="4">Tisch 4</option>
       </select>
     </div>
-    <div class="error-msg" id="login-error">Vul je naam en tafelnummer in.</div>
+    <div class="error-msg" id="login-error">Bitte Namen und Tischnummer eingeben.</div>
   </div>
   <div class="sticky-btn">
     <button class="btn" id="btn-start">Starten</button>
@@ -135,8 +135,8 @@
     <div class="ronde-indicator" id="ronde-indicator"></div>
     <div style="padding:12px 0 0">
       <div class="question-header">
-        <span class="question-num" id="q-num">Vraag 1 van 6</span>
-        <span style="font-size:13px;color:var(--muted)" id="q-ronde-label">Ronde 1 — Tafel 1</span>
+        <span class="question-num" id="q-num">Frage 1 von 6</span>
+        <span style="font-size:13px;color:var(--muted)" id="q-ronde-label">Runde 1 — Tisch 1</span>
       </div>
       <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
     </div>
@@ -144,7 +144,7 @@
   <div class="card">
     <p class="question-text" id="q-text">Laden...</p>
     <div class="search-wrapper">
-      <input type="text" id="search-inp" placeholder="Begin met typen om te zoeken..." autocomplete="off" autocorrect="off" spellcheck="false">
+      <input type="text" id="search-inp" placeholder="Tippen zum Suchen..." autocomplete="off" autocorrect="off" spellcheck="false">
       <button class="search-clear" id="search-clear">×</button>
     </div>
     <div class="dropdown" id="dropdown"></div>
@@ -154,8 +154,8 @@
     </div>
   </div>
   <div class="sticky-btn">
-    <button class="btn" id="btn-next">Volgende →</button>
-    <button class="btn secondary" id="btn-prev">← Vorige</button>
+    <button class="btn" id="btn-next">Weiter →</button>
+    <button class="btn secondary" id="btn-prev">← Zurück</button>
   </div>
 </div>
  
@@ -163,12 +163,12 @@
 <div class="screen" id="screen-ronde-klaar">
   <div class="card ronde-klaar-card">
     <div class="icon">✓</div>
-    <h2 id="ronde-klaar-titel">Ronde 1 klaar!</h2>
+    <h2 id="ronde-klaar-titel">Runde 1 abgeschlossen!</h2>
     <p id="ronde-klaar-score" style="font-size:18px;font-weight:600;color:var(--accent);margin-bottom:8px"></p>
     <p id="ronde-klaar-tekst">Schuif nu door naar de volgende tafel.</p>
     <div class="tafel-badge" id="ronde-klaar-volgende"></div>
     <br>
-    <button class="btn success" id="btn-volgende-ronde">Volgende ronde starten →</button>
+    <button class="btn success" id="btn-volgende-ronde">Nächste Runde starten →</button>
   </div>
 </div>
  
@@ -188,7 +188,7 @@
   <div id="answers-per-ronde"></div>
  
   <div style="padding:0 0 20px">
-    <button class="btn secondary" id="btn-restart">Opnieuw beginnen</button>
+    <button class="btn secondary" id="btn-restart">Neu beginnen</button>
   </div>
 </div>
  
@@ -197,7 +197,7 @@
   <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;gap:16px;padding:20px">
     <div class="spinner"></div>
     <p id="loading-msg" style="font-size:16px;color:var(--muted);text-align:center;font-weight:500">Laden...</p>
-    <p style="font-size:13px;color:var(--muted);text-align:center;opacity:.7">Even geduld, dit duurt enkele seconden</p>
+    <p style="font-size:13px;color:var(--muted);text-align:center;opacity:.7">Bitte warten, das dauert einige Sekunden</p>
   </div>
 </div>
  
@@ -206,7 +206,7 @@
    CONFIGURATIE
    Vul hieronder de Apps Script URL in.
    ===================================================== */
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFZjy8pdfJc6LZaHwkMsUbLFHOALq-4z8M0zRPFi0fuOaE5Ek3hETv3d4Bqd26oefa/exec';
+const SCRIPT_URL = 'JOUW_APPS_SCRIPT_URL_HIER';
  
 const VRAGEN_PER_RONDE = 6;
 const AANTAL_RONDES    = 4;
@@ -223,7 +223,7 @@ async function api(action, data, maxRetries = 3) {
  
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      setLoadingMsg(attempt > 1 ? 'Poging ' + attempt + ' van ' + maxRetries + '...' : 'Laden...');
+      setLoadingMsg(attempt > 1 ? 'Versuch ' + attempt + ' von ' + maxRetries + '...' : 'Laden...');
       const params   = new URLSearchParams({ action, ...flatten(data) });
       const response = await fetch(url + '?' + params, { method: 'GET', redirect: 'follow' });
       if (!response.ok) throw new Error('HTTP ' + response.status);
@@ -311,7 +311,7 @@ document.getElementById('btn-start').addEventListener('click', async () => {
   if (name.length < 2 || !tafel) { err.style.display = 'block'; return; }
   err.style.display = 'none';
  
-  setLoadingMsg('Vragen laden...');
+  setLoadingMsg('Fragen laden...');
   showScreen('screen-loading');
  
   try {
@@ -320,7 +320,7 @@ document.getElementById('btn-start').addEventListener('click', async () => {
     allVragen  = data.questions || [];
  
     if (allVragen.length < TOTAAL_VRAGEN) {
-      alert(`Er zijn maar ${allVragen.length} van de ${TOTAAL_VRAGEN} vragen ingesteld in de sheet.`);
+      alert(`Es sind nur ${allVragen.length} von ${TOTAAL_VRAGEN} Fragen in der Tabelle eingestellt.`);
       showScreen('screen-login');
       return;
     }
@@ -338,14 +338,14 @@ document.getElementById('btn-start').addEventListener('click', async () => {
     showScreen('screen-quiz');
  
   } catch (e) {
-    alert('Verbindingsfout. Controleer de URL en probeer opnieuw.');
+    alert('Verbindungsfehler. Bitte URL prüfen und erneut versuchen.');
     showScreen('screen-login');
   }
 });
  
 function updateHeaderSub() {
   document.getElementById('header-sub').textContent =
-    `${userName} — Tafel ${tafelnummerVoorRonde(huidigeRonde)}`;
+    `${userName} — Tisch ${tafelnummerVoorRonde(huidigeRonde)}`;
 }
  
 /* =====================================================
@@ -370,13 +370,13 @@ function renderVraag() {
   // Voortgang over alle 24 vragen
   const globaalVraagnr = totaalIdx + 1;
   document.getElementById('q-num').textContent =
-    `Vraag ${huidigeVraag + 1} van ${VRAGEN_PER_RONDE}`;
+    `Frage ${huidigeVraag + 1} von ${VRAGEN_PER_RONDE}`;
   document.getElementById('q-ronde-label').textContent =
-    `Ronde ${huidigeRonde + 1} — Tafel ${tafelnummerVoorRonde(huidigeRonde)}`;
+    `Runde ${huidigeRonde + 1} — Tisch ${tafelnummerVoorRonde(huidigeRonde)}`;
   document.getElementById('progress-fill').style.width =
     `${((huidigeVraag + 1) / VRAGEN_PER_RONDE) * 100}%`;
   document.getElementById('q-text').textContent =
-    `Wat is het antwoord op vraag ${vraag.vraagnummer}?`;
+    `Was ist die Antwort auf Frage ${vraag.vraagnummer}?`;
  
   // Zoekbalk resetten
   searchInp.value = '';
@@ -395,7 +395,7 @@ function renderVraag() {
  
   document.getElementById('btn-prev').disabled = huidigeVraag === 0;
   document.getElementById('btn-next').textContent =
-    huidigeVraag === VRAGEN_PER_RONDE - 1 ? 'Ronde afronden ✓' : 'Volgende →';
+    huidigeVraag === VRAGEN_PER_RONDE - 1 ? 'Runde abschließen ✓' : 'Weiter →';
  
   updateHeaderSub();
   renderRondeIndicator();
@@ -473,7 +473,7 @@ document.getElementById('btn-next').addEventListener('click', () => {
     );
     const missing = rondeAntwoorden.filter(a => !a).length;
     if (missing > 0) {
-      if (!confirm(`Je hebt nog ${missing} vraag/vragen niet ingevuld in deze ronde. Toch afronden?`)) return;
+      if (!confirm(`Du hast noch ${missing} Frage(n) in dieser Runde nicht beantwortet. Trotzdem abschließen?`)) return;
     }
     rondeAfronden();
   }
@@ -504,10 +504,10 @@ function rondeAfronden() {
   const volgendeRonde  = huidigeRonde + 1;
   const volgendeTafel  = tafelnummerVoorRonde(volgendeRonde);
  
-  document.getElementById('ronde-klaar-titel').textContent   = `Ronde ${huidigeRonde + 1} klaar!`;
-  document.getElementById('ronde-klaar-score').textContent    = `${rondeScore} van ${VRAGEN_PER_RONDE} goed`;
-  document.getElementById('ronde-klaar-tekst').textContent    = `Schuif nu door naar de volgende tafel en druk op starten als je er klaar voor bent.`;
-  document.getElementById('ronde-klaar-volgende').textContent = `Volgende tafel: Tafel ${volgendeTafel}`;
+  document.getElementById('ronde-klaar-titel').textContent   = `Runde ${huidigeRonde + 1} abgeschlossen!`;
+  document.getElementById('ronde-klaar-score').textContent    = `${rondeScore} von ${VRAGEN_PER_RONDE} richtig`;
+  document.getElementById('ronde-klaar-tekst').textContent    = `Gehe jetzt zum nächsten Tisch und drücke auf Starten, wenn du bereit bist.`;
+  document.getElementById('ronde-klaar-volgende').textContent = `Nächster Tisch: Tisch ${volgendeTafel}`;
  
   showScreen('screen-ronde-klaar');
 }
@@ -541,15 +541,15 @@ function toonEindresultaat() {
   document.getElementById('res-total').textContent = `/${totaal}`;
   document.getElementById('res-name').textContent  = userName;
   document.getElementById('res-msg').textContent   =
-    totalScore === totaal     ? 'Perfecte score! Uitstekend werk.'         :
-    totalScore >= totaal*.75  ? 'Heel goed gedaan!'                        :
-    totalScore >= totaal*.5   ? 'Redelijk resultaat. Blijf oefenen!'       :
-                                'Nog veel te leren — maar je bent begonnen!';
+    totalScore === totaal     ? 'Perfekte Punktzahl! Ausgezeichnete Arbeit.'         :
+    totalScore >= totaal*.75  ? 'Sehr gut gemacht!'                        :
+    totalScore >= totaal*.5   ? 'Ordentliches Ergebnis. Weiter üben!'       :
+                                'Noch viel zu lernen — aber du hast angefangen!';
  
   // Score per ronde kaartjes
   document.getElementById('score-per-ronde').innerHTML = rondeScores.map((s, r) =>
     `<div class="score-ronde-card">
-      <div class="label">Ronde ${r+1}</div>
+      <div class="label">Runde ${r+1}</div>
       <div class="value">${s}/${VRAGEN_PER_RONDE}</div>
     </div>`
   ).join('');
@@ -563,13 +563,13 @@ function toonEindresultaat() {
       const given   = antwoorden[startIdx + i] || '—';
       const correct = given.toLowerCase() === v.term.toLowerCase();
       return `<div class="answer-item">
-        <p class="q-label">Vraag ${v.vraagnummer}</p>
+        <p class="q-label">Frage ${v.vraagnummer}</p>
         <p class="given"><span class="tag ${correct?'good':'bad'}">${correct?'✓':'✗'}</span> ${given}</p>
-        ${!correct ? `<p class="correct-show">Juist: ${v.term}</p>` : ''}
+        ${!correct ? `<p class="correct-show">Richtig: ${v.term}</p>` : ''}
       </div>`;
     }).join('');
     return `<div class="ronde-sectie">
-      <div class="ronde-header">Ronde ${r+1} — Tafel ${tafel} (${rondeScores[r]}/${VRAGEN_PER_RONDE} goed)</div>
+      <div class="ronde-header">Runde ${r+1} — Tisch ${tafel} (${rondeScores[r]}/${VRAGEN_PER_RONDE} richtig)</div>
       <div class="answers-review" style="margin-bottom:16px">${items}</div>
     </div>`;
   }).join('');
