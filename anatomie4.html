@@ -600,8 +600,12 @@ function toonEindresultaat() {
 }
  
 document.getElementById('btn-restart').addEventListener('click', () => {
+  // Wis naam, tafelnummer en header zodat er geen verwarring is
   document.getElementById('inp-name').value  = '';
   document.getElementById('inp-tafel').value = '';
+  document.getElementById('header-sub').textContent = 'Runden Quiz';
+  userName   = '';
+  starttafel = 0;
   showScreen('screen-login');
 });
  
