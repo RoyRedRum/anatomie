@@ -206,7 +206,7 @@
    CONFIGURATIE
    Vul hieronder de Apps Script URL in.
    ===================================================== */
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFZjy8pdfJc6LZaHwkMsUbLFHOALq-4z8M0zRPFi0fuOaE5Ek3hETv3d4Bqd26oefa/exec';
+const SCRIPT_URL = 'JOUW_APPS_SCRIPT_URL_HIER';
  
 const VRAGEN_PER_RONDE = 6;
 const AANTAL_RONDES    = 4;
@@ -576,13 +576,26 @@ function toonEindresultaat() {
  
   showScreen('screen-result');
  
+  // Antwoorden opbouwen als string: "1:Aorta,2:Tibia,..."
+  // Met markering of het goed of fout is
+  const antwoordenStr = Array.from({length: AANTAL_RONDES}, (_, r) => {
+    const startIdx    = r * VRAGEN_PER_RONDE;
+    const rondeVragen = rondeVolgorde[r];
+    return rondeVragen.map((v, i) => {
+      const gegeven  = antwoorden[startIdx + i] || '—';
+      const correct  = gegeven.toLowerCase() === v.term.toLowerCase();
+      return `${v.vraagnummer}:${gegeven}:${correct ? 'goed' : 'fout'}`;
+    });
+  }).flat().join(',');
+ 
   // Score opslaan
   api('saveScore', {
-    name:       userName,
-    starttafel: starttafel,
-    score:      totalScore,
-    total:      totaal,
-    date:       new Date().toLocaleDateString('nl-NL')
+    name:        userName,
+    starttafel:  starttafel,
+    score:       totalScore,
+    total:       totaal,
+    date:        new Date().toLocaleDateString('nl-NL'),
+    antwoorden:  antwoordenStr
   });
 }
  
