@@ -209,7 +209,7 @@
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFZjy8pdfJc6LZaHwkMsUbLFHOALq-4z8M0zRPFi0fuOaE5Ek3hETv3d4Bqd26oefa/exec';
  
 const VRAGEN_PER_RONDE = 6;
-const AANTAL_RONDES    = 3;  // 3 rondes (eigen tafel wordt overgeslagen)
+const AANTAL_RONDES    = 3;  // 3 Runden (eigener Tisch wird übersprungen)
 const TOTAAL_VRAGEN    = VRAGEN_PER_RONDE * AANTAL_RONDES; // 18
  
 function getScriptUrl() { return SCRIPT_URL; }
@@ -254,7 +254,7 @@ function setLoadingMsg(msg) {
    ===================================================== */
 let allVragen   = [];   // Alle 24 vragen gesorteerd op nummer
 let allTerms    = [];   // Alle termen voor zoekfunctie
-let rondeVolgorde = []; // Array van 4 rondes, elk array van 6 vragen
+let rondeVolgorde = []; // Array von 3 Runden
 let antwoorden  = [];   // Platte array van 24 antwoorden
 let huidigeRonde = 0;   // 0-3
 let huidigeVraag = 0;   // 0-5 binnen de ronde
@@ -268,7 +268,7 @@ let starttafel  = 0;
    Starttisch 2 → ronde 1=Tisch3, ronde 2=Tisch4, ronde 3=Tisch1
    Starttisch 3 → ronde 1=Tisch4, ronde 2=Tisch1, ronde 3=Tisch2
    Starttisch 4 → ronde 1=Tisch1, ronde 2=Tisch2, ronde 3=Tisch3
-   Score = 18 vragen (3 rondes x 6)
+   Score = 18 Fragen (3 Runden x 6)
    ===================================================== */
 function berekenRondeVolgorde(tafel) {
   const volgorde = [];
@@ -543,7 +543,7 @@ function toonEindresultaat() {
   }
  
   document.getElementById('res-score').textContent = totalScore;
-  document.getElementById('res-total').textContent = `/${totaal} (Tisch ${starttafel} übersprungen)`;
+  document.getElementById('res-total').textContent = `/${totaal}`;
   document.getElementById('res-name').textContent  = userName;
   document.getElementById('res-msg').textContent   =
     totalScore === totaal     ? 'Perfekte Punktzahl! Ausgezeichnete Arbeit.'         :
