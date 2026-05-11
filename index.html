@@ -387,24 +387,22 @@ searchInp.addEventListener('input', () => {
   const lower = q.toLowerCase();
   const matches = allTerms.filter(t => t.toLowerCase().includes(lower)).slice(0, 30);
 
-  const usedTerms = antwoorden
-    .map((a, i) => (a && i !== huidigeRonde * VRAGEN_PER_RONDE + huidigeVraag) ? a.toLowerCase() : null)
-    .filter(Boolean);
-
   if (matches.length === 0) {
     dropdown.innerHTML = '<div class="dropdown-empty">Geen overeenkomsten gevonden</div>';
   } else {
     dropdown.innerHTML = matches.map(term => {
-      const isUsed = usedTerms.includes(term.toLowerCase());
-      const idx    = term.toLowerCase().indexOf(lower);
-      const hi     = term.slice(0, idx) + '<mark>' + term.slice(idx, idx + q.length) + '</mark>' + term.slice(idx + q.length);
-      if (isUsed) {
-        return `<div class="dropdown-item" style="opacity:.4;cursor:not-allowed;pointer-events:none;display:flex;justify-content:space-between;"><span>${hi}</span><span style="font-size:11px;margin-left:8px">Schon verwendet</span></div>`;
-      }
-      return `<div class="dropdown-item" onclick="selectAnswer('${term.replace(/'/g, "\\'")}')" ><span>${hi}</span></div>`;
+      const idx = term.toLowerCase().indexOf(lower);
+      const hi  = term.slice(0, idx) + '<mark>' + term.slice(idx, idx + q.length) + '</mark>' + term.slice(idx + q.length);
+      return `<div class="dropdown-item" data-term="${term.replace(/"/g, '&quot;')}"><span>${hi}</span></div>`;
     }).join('');
   }
   dropdown.classList.add('open');
+});
+
+dropdown.addEventListener('click', e => {
+  const item = e.target.closest('.dropdown-item[data-term]');
+  if (!item) return;
+  selectAnswer(item.dataset.term);
 });
 
 searchClear.addEventListener('click', () => {
