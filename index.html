@@ -75,7 +75,10 @@
   .answer-item .correct-show{font-size:13px;color:var(--success);margin-top:4px}
   .tag{display:inline-block;padding:2px 8px;border-radius:99px;font-size:12px;font-weight:600}
   .tag.good{background:var(--success-bg);color:var(--success)}
+  .tag.half{background:#fff3e0;color:#e65100}
   .tag.bad{background:var(--danger-bg);color:var(--danger)}
+  .half-list{font-size:13px;color:#e65100;margin-top:4px}
+  .full-list{font-size:13px;color:var(--success);margin-top:4px}
   .score-per-ronde{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
   .score-ronde-card{background:var(--surface);border-radius:var(--radius-sm);padding:12px 8px;text-align:center;box-shadow:var(--shadow)}
   .score-ronde-card .label{font-size:11px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
@@ -240,7 +243,7 @@ function setLoadingMsg(msg) {
 /* =====================================================
    APP STATE
    ===================================================== */
-let allVragen      = [];
+let allVragen      = [];  // { vraagnummer, term, halfgoed: [] }
 let allTerms       = [];
 let rondeVolgorde  = [];
 let antwoorden     = [];
@@ -451,14 +454,30 @@ document.getElementById('btn-prev').addEventListener('click', () => {
 });
 
 /* =====================================================
+   HELPER: score voor één antwoord (1, 0.5 of 0)
+   ===================================================== */
+function berekenPunten(gegeven, vraag) {
+  if (!gegeven || gegeven === '—') return 0;
+  if (gegeven.toLowerCase() === vraag.term.toLowerCase()) return 1;
+  const halfgoed = vraag.halfgoed || [];
+  if (halfgoed.some(h => h.toLowerCase() === gegeven.toLowerCase())) return 0.5;
+  return 0;
+}
+
+function formatScore(score) {
+  return score % 1 === 0 ? String(score) : score.toFixed(1).replace('.', ',');
+}
+
+/* =====================================================
    RONDE AFRONDEN
    ===================================================== */
 function rondeAfronden() {
   const rondeVragen = rondeVolgorde[huidigeRonde].vragen;
   const startIdx    = huidigeRonde * VRAGEN_PER_RONDE;
-  const rondeScore  = antwoorden
-    .slice(startIdx, startIdx + VRAGEN_PER_RONDE)
-    .filter((a, i) => a && a.toLowerCase() === rondeVragen[i].term.toLowerCase()).length;
+  let rondeScore = 0;
+  for (let i = 0; i < VRAGEN_PER_RONDE; i++) {
+    rondeScore += berekenPunten(antwoorden[startIdx + i], rondeVragen[i]);
+  }
 
   const isLaatsteRonde = huidigeRonde === AANTAL_RONDES - 1;
   if (isLaatsteRonde) {
@@ -469,9 +488,9 @@ function rondeAfronden() {
   const volgendeRonde = huidigeRonde + 1;
   const volgendeTafel = tafelnummerVoorRonde(volgendeRonde);
 
-  document.getElementById('ronde-klaar-titel').textContent   = `Runde ${huidigeRonde + 1} abgeschlossen!`;
-  document.getElementById('ronde-klaar-score').textContent   = `${rondeScore} von ${VRAGEN_PER_RONDE} richtig`;
-  document.getElementById('ronde-klaar-tekst').textContent   = 'Gehe jetzt zum nächsten Tisch und drücke auf Starten, wenn du bereit bist.';
+  document.getElementById('ronde-klaar-titel').textContent    = `Runde ${huidigeRonde + 1} abgeschlossen!`;
+  document.getElementById('ronde-klaar-score').textContent    = `${formatScore(rondeScore)} von ${VRAGEN_PER_RONDE} Punkten`;
+  document.getElementById('ronde-klaar-tekst').textContent    = 'Gehe jetzt zum nächsten Tisch und drücke auf Starten, wenn du bereit bist.';
   document.getElementById('ronde-klaar-volgende').textContent = `Nächster Tisch: Tisch ${volgendeTafel}`;
   showScreen('screen-ronde-klaar');
 }
@@ -494,14 +513,15 @@ function toonEindresultaat() {
   for (let r = 0; r < AANTAL_RONDES; r++) {
     const startIdx    = r * VRAGEN_PER_RONDE;
     const rondeVragen = rondeVolgorde[r].vragen;
-    const score = antwoorden
-      .slice(startIdx, startIdx + VRAGEN_PER_RONDE)
-      .filter((a, i) => a && a.toLowerCase() === rondeVragen[i].term.toLowerCase()).length;
+    let score = 0;
+    for (let i = 0; i < VRAGEN_PER_RONDE; i++) {
+      score += berekenPunten(antwoorden[startIdx + i], rondeVragen[i]);
+    }
     rondeScores.push(score);
     totalScore += score;
   }
 
-  document.getElementById('res-score').textContent = totalScore;
+  document.getElementById('res-score').textContent = formatScore(totalScore);
   document.getElementById('res-total').textContent = `/${totaal}`;
   document.getElementById('res-name').textContent  = userName;
   document.getElementById('res-msg').textContent   =
@@ -513,7 +533,7 @@ function toonEindresultaat() {
   document.getElementById('score-per-ronde').innerHTML = rondeScores.map((s, r) =>
     `<div class="score-ronde-card">
        <div class="label">Tisch ${tafelnummerVoorRonde(r)}</div>
-       <div class="value">${s}/${VRAGEN_PER_RONDE}</div>
+       <div class="value">${formatScore(s)}/${VRAGEN_PER_RONDE}</div>
      </div>`
   ).join('');
 
@@ -522,16 +542,27 @@ function toonEindresultaat() {
     const rondeVragen = rondeVolgorde[r].vragen;
     const tafel       = tafelnummerVoorRonde(r);
     const items = rondeVragen.map((v, i) => {
-      const given   = antwoorden[startIdx + i] || '—';
-      const correct = given.toLowerCase() === v.term.toLowerCase();
+      const given  = antwoorden[startIdx + i] || '—';
+      const punten = berekenPunten(given, v);
+      const tagCls = punten === 1 ? 'good' : punten === 0.5 ? 'half' : 'bad';
+      const symbol = punten === 1 ? '✓' : punten === 0.5 ? '½' : '✗';
+
+      const halfgoedLijst = (v.halfgoed && v.halfgoed.length > 0)
+        ? `<p class="half-list">Richtig (0,5 Punkt): ${v.halfgoed.join(', ')}</p>`
+        : '';
+
+      const correctShow = punten < 1
+        ? `<p class="full-list">Richtig (1 Punkt): ${v.term}</p>${halfgoedLijst}`
+        : halfgoedLijst;
+
       return `<div class="answer-item">
         <p class="q-label">Frage ${v.vraagnummer}</p>
-        <p class="given"><span class="tag ${correct ? 'good' : 'bad'}">${correct ? '✓' : '✗'}</span> ${given}</p>
-        ${!correct ? `<p class="correct-show">Richtig: ${v.term}</p>` : ''}
+        <p class="given"><span class="tag ${tagCls}">${symbol}</span> ${given}</p>
+        ${correctShow}
       </div>`;
     }).join('');
     return `<div class="ronde-sectie">
-      <div class="ronde-header">Runde ${r + 1} — Tisch ${tafel} (${rondeScores[r]}/${VRAGEN_PER_RONDE} richtig)</div>
+      <div class="ronde-header">Runde ${r + 1} — Tisch ${tafel} (${formatScore(rondeScores[r])}/${VRAGEN_PER_RONDE} Punkte)</div>
       <div class="answers-review" style="margin-bottom:16px">${items}</div>
     </div>`;
   }).join('');
@@ -543,8 +574,9 @@ function toonEindresultaat() {
     const rondeVragen = rondeVolgorde[r].vragen;
     return rondeVragen.map((v, i) => {
       const gegeven = antwoorden[startIdx + i] || '—';
-      const correct = gegeven.toLowerCase() === v.term.toLowerCase();
-      return `${v.vraagnummer}:${gegeven}:${correct ? 'goed' : 'fout'}`;
+      const punten  = berekenPunten(gegeven, v);
+      const status  = punten === 1 ? 'goed' : punten === 0.5 ? 'half' : 'fout';
+      return `${v.vraagnummer}:${gegeven}:${status}`;
     });
   }).flat().join(',');
 
