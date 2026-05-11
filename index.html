@@ -12,7 +12,7 @@
     --danger:#8a2020;--danger-bg:#f8e8e8;--warn:#7a5700;--warn-bg:#fff8e8;
     --border:rgba(0,0,0,0.1);--radius:14px;--radius-sm:8px;--shadow:0 2px 12px rgba(0,0,0,0.08);
   }
-  ,::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  *,::before,*::after{box-sizing:border-box;margin:0;padding:0}
   html,body{width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%}
   body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:160px}
   header{width:100%;background:var(--accent);padding:16px;text-align:center;position:sticky;top:0;z-index:10}
@@ -54,15 +54,11 @@
   .clear-selection{background:none;border:none;font-size:18px;color:var(--accent);cursor:pointer;padding:0 0 0 8px;flex-shrink:0}
   .sticky-btn{position:sticky;bottom:0;width:100%;padding:10px 16px 28px;background:var(--bg);border-top:1px solid var(--border);z-index:20;display:flex;flex-direction:column;gap:8px}
   .sticky-btn .btn{width:100%}
- 
-  /* Tussenscherm ronde klaar */
   .ronde-klaar-card{text-align:center;padding:32px 20px}
   .ronde-klaar-card .icon{font-size:48px;margin-bottom:16px}
   .ronde-klaar-card h2{font-family:'DM Serif Display',serif;font-size:24px;margin-bottom:8px;color:var(--text)}
   .ronde-klaar-card p{font-size:15px;color:var(--muted);line-height:1.6;margin-bottom:20px}
   .tafel-badge{display:inline-block;background:var(--accent);color:#fff;border-radius:99px;padding:6px 20px;font-size:16px;font-weight:600;margin-bottom:20px}
- 
-  /* Resultaten */
   .result-score{text-align:center;padding:28px 20px 20px}
   .score-circle{width:130px;height:130px;border-radius:50%;background:var(--accent-light);border:3px solid var(--accent);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 16px}
   .score-number{font-family:'DM Serif Display',serif;font-size:44px;color:var(--accent);line-height:1}
@@ -84,8 +80,6 @@
   .score-ronde-card{background:var(--surface);border-radius:var(--radius-sm);padding:12px 8px;text-align:center;box-shadow:var(--shadow)}
   .score-ronde-card .label{font-size:11px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
   .score-ronde-card .value{font-size:20px;font-weight:600;color:var(--accent)}
- 
-  /* Loading */
   .loading{text-align:center;padding:40px 20px;color:var(--muted);font-size:15px}
   .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
   @keyframes spin{to{transform:rotate(360deg)}}
@@ -95,12 +89,11 @@
 </style>
 </head>
 <body>
- 
 <header>
   <h1>Anatomie Test</h1>
   <p id="header-sub">Runden Quiz</p>
 </header>
- 
+
 <!-- SCHERM 1: Login -->
 <div class="screen active" id="screen-login">
   <div style="margin-top:8px">
@@ -128,7 +121,7 @@
     <button class="btn" id="btn-start">Starten</button>
   </div>
 </div>
- 
+
 <!-- SCHERM 2: Quiz -->
 <div class="screen" id="screen-quiz">
   <div>
@@ -158,40 +151,37 @@
     <button class="btn secondary" id="btn-prev">← Zurück</button>
   </div>
 </div>
- 
+
 <!-- SCHERM 3: Tussenscherm ronde klaar -->
 <div class="screen" id="screen-ronde-klaar">
   <div class="card ronde-klaar-card">
     <div class="icon">✓</div>
     <h2 id="ronde-klaar-titel">Runde 1 abgeschlossen!</h2>
     <p id="ronde-klaar-score" style="font-size:18px;font-weight:600;color:var(--accent);margin-bottom:8px"></p>
-    <p id="ronde-klaar-tekst">Schuif nu door naar de volgende tafel.</p>
+    <p id="ronde-klaar-tekst">Gehe jetzt zum nächsten Tisch.</p>
     <div class="tafel-badge" id="ronde-klaar-volgende"></div>
     <br>
     <button class="btn success" id="btn-volgende-ronde">Nächste Runde starten →</button>
   </div>
 </div>
- 
+
 <!-- SCHERM 4: Eindresultaat -->
 <div class="screen" id="screen-result">
   <div class="card result-score">
     <div class="score-circle">
       <span class="score-number" id="res-score">0</span>
-      <span class="score-total" id="res-total">/24</span>
+      <span class="score-total" id="res-total">/18</span>
     </div>
     <p class="result-name" id="res-name"></p>
     <p class="result-msg" id="res-msg"></p>
   </div>
- 
   <div class="score-per-ronde" id="score-per-ronde"></div>
- 
   <div id="answers-per-ronde"></div>
- 
   <div style="padding:0 0 20px">
     <button class="btn secondary" id="btn-restart">Neu beginnen</button>
   </div>
 </div>
- 
+
 <!-- SCHERM 5: Laden -->
 <div class="screen" id="screen-loading">
   <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;gap:16px;padding:20px">
@@ -200,31 +190,29 @@
     <p style="font-size:13px;color:var(--muted);text-align:center;opacity:.7">Bitte warten, das dauert einige Sekunden</p>
   </div>
 </div>
- 
+
 <script>
 /* =====================================================
    CONFIGURATIE
-   Vul hieronder de Apps Script URL in.
    ===================================================== */
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwgPjT1yU1HvKwZjEe4nMKl3OkvHIaYphvlOZjwu34l6Rzq0nUCm1KRYHAX8xh9_BU/exec';
- 
+
 const VRAGEN_PER_RONDE = 6;
-const AANTAL_RONDES    = 3;  // 3 Runden (eigener Tisch wird übersprungen)
+const AANTAL_RONDES    = 3;
 const TOTAAL_VRAGEN    = VRAGEN_PER_RONDE * AANTAL_RONDES; // 18
- 
+
 function getScriptUrl() { return SCRIPT_URL; }
- 
+
 /* =====================================================
    API via fetch
    ===================================================== */
 async function api(action, data, maxRetries = 3) {
   const url = getScriptUrl();
   if (!url) throw new Error('Geen Apps Script URL ingesteld');
- 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      setLoadingMsg(attempt > 1 ? 'Versuch ' + attempt + ' von ' + maxRetries + '...' : 'Laden...');
-      const params   = new URLSearchParams({ action, ...flatten(data) });
+      setLoadingMsg(attempt > 1 ? `Versuch ${attempt} von ${maxRetries}...` : 'Laden...');
+      const params = new URLSearchParams({ action, ...flatten(data) });
       const response = await fetch(url + '?' + params, { method: 'GET', redirect: 'follow' });
       if (!response.ok) throw new Error('HTTP ' + response.status);
       const result = await response.json();
@@ -236,46 +224,43 @@ async function api(action, data, maxRetries = 3) {
     }
   }
 }
- 
+
 function flatten(data) {
   if (!data) return {};
   const out = {};
   Object.keys(data).forEach(k => { out[k] = typeof data[k] === 'object' ? JSON.stringify(data[k]) : data[k]; });
   return out;
 }
- 
+
 function setLoadingMsg(msg) {
   const el = document.getElementById('loading-msg');
   if (el) el.textContent = msg;
 }
- 
+
 /* =====================================================
    APP STATE
    ===================================================== */
-let allVragen   = [];   // Alle 24 vragen gesorteerd op nummer
-let allTerms    = [];   // Alle termen voor zoekfunctie
-let rondeVolgorde = []; // Array von 3 Runden
-let antwoorden  = [];   // Platte array van 24 antwoorden
-let huidigeRonde = 0;   // 0-3
-let huidigeVraag = 0;   // 0-5 binnen de ronde
-let userName    = '';
-let starttafel  = 0;
- 
+let allVragen      = [];
+let allTerms       = [];
+let rondeVolgorde  = [];
+let antwoorden     = [];
+let huidigeRonde   = 0;
+let huidigeVraag   = 0;
+let userName       = '';
+let starttafel     = 0;
+
 /* =====================================================
    RONDE VOLGORDE BEREKENEN
-   Roterend, eigen tafel wordt overgeslagen.
    Starttisch 1 → ronde 1=Tisch2, ronde 2=Tisch3, ronde 3=Tisch4
    Starttisch 2 → ronde 1=Tisch3, ronde 2=Tisch4, ronde 3=Tisch1
    Starttisch 3 → ronde 1=Tisch4, ronde 2=Tisch1, ronde 3=Tisch2
    Starttisch 4 → ronde 1=Tisch1, ronde 2=Tisch2, ronde 3=Tisch3
-   Score = 18 Fragen (3 Runden x 6)
    ===================================================== */
 function berekenRondeVolgorde(tafel) {
   const volgorde = [];
   for (let r = 1; r <= 3; r++) {
-    // Start bij eigen tafel + 1, roteer met modulo over 4 tafels
     const tafelnummer = (tafel - 1 + r) % 4 + 1;
-    const start       = (tafelnummer - 1) * VRAGEN_PER_RONDE;
+    const start = (tafelnummer - 1) * VRAGEN_PER_RONDE;
     volgorde.push({
       tafelnummer: tafelnummer,
       vragen: allVragen.slice(start, start + VRAGEN_PER_RONDE)
@@ -283,18 +268,18 @@ function berekenRondeVolgorde(tafel) {
   }
   return volgorde;
 }
- 
+
 function tafelnummerVoorRonde(ronde) {
   return rondeVolgorde[ronde] ? rondeVolgorde[ronde].tafelnummer : '?';
 }
- 
+
 /* =====================================================
    OPSTARTEN
    ===================================================== */
 window.addEventListener('load', () => {
   showScreen('screen-login');
 });
- 
+
 /* =====================================================
    NAVIGATIE
    ===================================================== */
@@ -303,7 +288,7 @@ function showScreen(id) {
   document.getElementById(id).classList.add('active');
   window.scrollTo(0, 0);
 }
- 
+
 /* =====================================================
    LOGIN
    ===================================================== */
@@ -311,85 +296,69 @@ document.getElementById('btn-start').addEventListener('click', async () => {
   const name  = document.getElementById('inp-name').value.trim();
   const tafel = parseInt(document.getElementById('inp-tafel').value);
   const err   = document.getElementById('login-error');
- 
   if (name.length < 2 || !tafel) { err.style.display = 'block'; return; }
   err.style.display = 'none';
- 
   setLoadingMsg('Fragen laden...');
   showScreen('screen-loading');
- 
   try {
     const data = await api('getQuestions');
-    allTerms   = data.terms    || [];
-    allVragen  = data.questions || [];
- 
+    allTerms  = data.terms     || [];
+    allVragen = data.questions || [];
     if (allVragen.length < TOTAAL_VRAGEN) {
-      alert(⁠ Es sind nur ${allVragen.length} von ${TOTAAL_VRAGEN} Fragen in der Tabelle eingestellt. ⁠);
+      alert(`Es sind nur ${allVragen.length} von ${TOTAAL_VRAGEN} Fragen in der Tabelle eingestellt.`);
       showScreen('screen-login');
       return;
     }
- 
     userName       = name;
     starttafel     = tafel;
     huidigeRonde   = 0;
     huidigeVraag   = 0;
     antwoorden     = new Array(TOTAAL_VRAGEN).fill(null);
     rondeVolgorde  = berekenRondeVolgorde(tafel);
- 
     updateHeaderSub();
     renderRondeIndicator();
     renderVraag();
     showScreen('screen-quiz');
- 
   } catch (e) {
     alert('Verbindungsfehler. Bitte URL prüfen und erneut versuchen.');
     showScreen('screen-login');
   }
 });
- 
+
 function updateHeaderSub() {
-  document.getElementById('header-sub').textContent =
-    ⁠ ${userName} — Starttisch ${starttafel} ⁠;
+  document.getElementById('header-sub').textContent = `${userName} — Starttisch ${starttafel}`;
 }
- 
+
 /* =====================================================
-   RONDE INDICATOR (4 bolletjes bovenaan)
+   RONDE INDICATOR
    ===================================================== */
 function renderRondeIndicator() {
   const el = document.getElementById('ronde-indicator');
   el.innerHTML = Array.from({length: AANTAL_RONDES}, (_, i) => {
-    const cls = i < huidigeRonde ? 'done' : i === huidigeRonde ? 'active' : '';
+    const cls     = i < huidigeRonde ? 'done' : i === huidigeRonde ? 'active' : '';
     const tafelNr = rondeVolgorde[i] ? rondeVolgorde[i].tafelnummer : '';
-    return ⁠ <div class="ronde-dot ${cls}" title="Tisch ${tafelNr}"></div> ⁠;
+    return `<div class="ronde-dot ${cls}" title="Tisch ${tafelNr}"></div>`;
   }).join('');
 }
- 
+
 /* =====================================================
    VRAAG RENDEREN
    ===================================================== */
 function renderVraag() {
   const rondeVragen = rondeVolgorde[huidigeRonde].vragen;
   const vraag       = rondeVragen[huidigeVraag];
-  const totaalIdx   = huidigeRonde * VRAGEN_PER_RONDE + huidigeVraag; // globale index voor antwoorden[]
- 
-  // Voortgang over alle 24 vragen
-  const globaalVraagnr = totaalIdx + 1;
-  document.getElementById('q-num').textContent =
-    ⁠ Frage ${huidigeVraag + 1} von ${VRAGEN_PER_RONDE} ⁠;
-  document.getElementById('q-ronde-label').textContent =
-    ⁠ Runde ${huidigeRonde + 1} — Tisch ${tafelnummerVoorRonde(huidigeRonde)} ⁠;
-  document.getElementById('progress-fill').style.width =
-    ⁠ ${((huidigeVraag + 1) / VRAGEN_PER_RONDE) * 100}% ⁠;
-  document.getElementById('q-text').textContent =
-    ⁠ Welche Struktur ist Label ${vraag.vraagnummer}? ⁠;
- 
-  // Zoekbalk resetten
+  const totaalIdx   = huidigeRonde * VRAGEN_PER_RONDE + huidigeVraag;
+
+  document.getElementById('q-num').textContent        = `Frage ${huidigeVraag + 1} von ${VRAGEN_PER_RONDE}`;
+  document.getElementById('q-ronde-label').textContent = `Runde ${huidigeRonde + 1} — Tisch ${tafelnummerVoorRonde(huidigeRonde)}`;
+  document.getElementById('progress-fill').style.width = `${((huidigeVraag + 1) / VRAGEN_PER_RONDE) * 100}%`;
+  document.getElementById('q-text').textContent        = `Welche Struktur ist Label ${vraag.vraagnummer}?`;
+
   searchInp.value = '';
   dropdown.classList.remove('open');
   dropdown.innerHTML = '';
   searchClear.style.display = 'none';
- 
-  // Geselecteerd antwoord tonen
+
   const sel = document.getElementById('selected-answer');
   if (antwoorden[totaalIdx]) {
     document.getElementById('selected-text').textContent = antwoorden[totaalIdx];
@@ -397,63 +366,59 @@ function renderVraag() {
   } else {
     sel.classList.remove('visible');
   }
- 
-  document.getElementById('btn-prev').disabled = huidigeVraag === 0;
-  document.getElementById('btn-next').textContent =
-    huidigeVraag === VRAGEN_PER_RONDE - 1 ? 'Runde abschließen ✓' : 'Weiter →';
- 
+
+  document.getElementById('btn-prev').disabled      = huidigeVraag === 0;
+  document.getElementById('btn-next').textContent   = huidigeVraag === VRAGEN_PER_RONDE - 1 ? 'Runde abschließen ✓' : 'Weiter →';
   updateHeaderSub();
   renderRondeIndicator();
 }
- 
+
 /* =====================================================
    ZOEKFUNCTIE
    ===================================================== */
-const searchInp   = document.getElementById('search-inp');
-const dropdown    = document.getElementById('dropdown');
+const searchInp  = document.getElementById('search-inp');
+const dropdown   = document.getElementById('dropdown');
 const searchClear = document.getElementById('search-clear');
- 
+
 searchInp.addEventListener('input', () => {
   const q = searchInp.value.trim();
   searchClear.style.display = q ? 'block' : 'none';
   if (!q) { dropdown.classList.remove('open'); return; }
- 
   const lower = q.toLowerCase();
   const matches = allTerms.filter(t => t.toLowerCase().includes(lower)).slice(0, 30);
- 
-  // Welke termen al gebruikt in andere vragen
+
   const usedTerms = antwoorden
     .map((a, i) => (a && i !== huidigeRonde * VRAGEN_PER_RONDE + huidigeVraag) ? a.toLowerCase() : null)
     .filter(Boolean);
- 
+
   if (matches.length === 0) {
     dropdown.innerHTML = '<div class="dropdown-empty">Geen overeenkomsten gevonden</div>';
   } else {
     dropdown.innerHTML = matches.map(term => {
       const isUsed = usedTerms.includes(term.toLowerCase());
       const idx    = term.toLowerCase().indexOf(lower);
-      const hi     = term.slice(0,idx) + '<mark>' + term.slice(idx, idx+q.length) + '</mark>' + term.slice(idx+q.length);
+      const hi     = term.slice(0, idx) + '<mark>' + term.slice(idx, idx + q.length) + '</mark>' + term.slice(idx + q.length);
       if (isUsed) {
-        return ⁠ <div class="dropdown-item" style="opacity:.4;cursor:not-allowed;pointer-events:none;display:flex;justify-content:space-between;"><span>${hi}</span><span style="font-size:11px;margin-left:8px">Schon verwendet</span></div> ⁠;
+        return `<div class="dropdown-item" style="opacity:.4;cursor:not-allowed;pointer-events:none;display:flex;justify-content:space-between;"><span>${hi}</span><span style="font-size:11px;margin-left:8px">Schon verwendet</span></div>`;
       }
-      return ⁠ <div class="dropdown-item" onclick="selectAnswer('${term.replace(/'/g,"\\'")}')"><span>${hi}</span></div> ⁠;
+      return `<div class="dropdown-item" onclick="selectAnswer('${term.replace(/'/g, "\\'")}')" ><span>${hi}</span></div>`;
     }).join('');
   }
   dropdown.classList.add('open');
 });
- 
+
 searchClear.addEventListener('click', () => {
   searchInp.value = ''; searchClear.style.display = 'none';
   dropdown.classList.remove('open'); searchInp.focus();
 });
- 
+
 document.getElementById('btn-clear-answer').addEventListener('click', () => {
   const idx = huidigeRonde * VRAGEN_PER_RONDE + huidigeVraag;
   antwoorden[idx] = null;
   document.getElementById('selected-answer').classList.remove('visible');
   searchInp.value = ''; searchClear.style.display = 'none';
 });
- 
+
 function selectAnswer(term) {
   const idx = huidigeRonde * VRAGEN_PER_RONDE + huidigeVraag;
   antwoorden[idx] = term;
@@ -462,7 +427,7 @@ function selectAnswer(term) {
   document.getElementById('selected-text').textContent = term;
   document.getElementById('selected-answer').classList.add('visible');
 }
- 
+
 /* =====================================================
    NAVIGATIE KNOPPEN
    ===================================================== */
@@ -471,59 +436,55 @@ document.getElementById('btn-next').addEventListener('click', () => {
     huidigeVraag++;
     renderVraag();
   } else {
-    // Laatste vraag van de ronde
     const rondeAntwoorden = antwoorden.slice(
       huidigeRonde * VRAGEN_PER_RONDE,
       (huidigeRonde + 1) * VRAGEN_PER_RONDE
     );
     const missing = rondeAntwoorden.filter(a => !a).length;
     if (missing > 0) {
-      if (!confirm(⁠ Du hast noch ${missing} Frage(n) in dieser Runde nicht beantwortet. Trotzdem abschließen? ⁠)) return;
+      if (!confirm(`Du hast noch ${missing} Frage(n) in dieser Runde nicht beantwortet. Trotzdem abschließen?`)) return;
     }
     rondeAfronden();
   }
 });
- 
+
 document.getElementById('btn-prev').addEventListener('click', () => {
   if (huidigeVraag > 0) { huidigeVraag--; renderVraag(); }
 });
- 
+
 /* =====================================================
    RONDE AFRONDEN
    ===================================================== */
 function rondeAfronden() {
-  const rondeVragen   = rondeVolgorde[huidigeRonde].vragen;
-  const startIdx      = huidigeRonde * VRAGEN_PER_RONDE;
-  const rondeScore    = antwoorden
+  const rondeVragen = rondeVolgorde[huidigeRonde].vragen;
+  const startIdx    = huidigeRonde * VRAGEN_PER_RONDE;
+  const rondeScore  = antwoorden
     .slice(startIdx, startIdx + VRAGEN_PER_RONDE)
     .filter((a, i) => a && a.toLowerCase() === rondeVragen[i].term.toLowerCase()).length;
- 
+
   const isLaatsteRonde = huidigeRonde === AANTAL_RONDES - 1;
- 
   if (isLaatsteRonde) {
     toonEindresultaat();
     return;
   }
- 
-  // Tussenscherm
-  const volgendeRonde  = huidigeRonde + 1;
-  const volgendeTafel  = tafelnummerVoorRonde(volgendeRonde);
- 
-  document.getElementById('ronde-klaar-titel').textContent   = ⁠ Runde ${huidigeRonde + 1} abgeschlossen! ⁠;
-  document.getElementById('ronde-klaar-score').textContent    = ⁠ ${rondeScore} von ${VRAGEN_PER_RONDE} richtig ⁠;
-  document.getElementById('ronde-klaar-tekst').textContent    = ⁠ Gehe jetzt zum nächsten Tisch und drücke auf Starten, wenn du bereit bist. ⁠;
-  document.getElementById('ronde-klaar-volgende').textContent = ⁠ Nächster Tisch: Tisch ${volgendeTafel} ⁠;
- 
+
+  const volgendeRonde = huidigeRonde + 1;
+  const volgendeTafel = tafelnummerVoorRonde(volgendeRonde);
+
+  document.getElementById('ronde-klaar-titel').textContent   = `Runde ${huidigeRonde + 1} abgeschlossen!`;
+  document.getElementById('ronde-klaar-score').textContent   = `${rondeScore} von ${VRAGEN_PER_RONDE} richtig`;
+  document.getElementById('ronde-klaar-tekst').textContent   = 'Gehe jetzt zum nächsten Tisch und drücke auf Starten, wenn du bereit bist.';
+  document.getElementById('ronde-klaar-volgende').textContent = `Nächster Tisch: Tisch ${volgendeTafel}`;
   showScreen('screen-ronde-klaar');
 }
- 
+
 document.getElementById('btn-volgende-ronde').addEventListener('click', () => {
   huidigeRonde++;
   huidigeVraag = 0;
   renderVraag();
   showScreen('screen-quiz');
 });
- 
+
 /* =====================================================
    EINDRESULTAAT
    ===================================================== */
@@ -531,7 +492,7 @@ function toonEindresultaat() {
   const totaal = TOTAAL_VRAGEN;
   let totalScore = 0;
   const rondeScores = [];
- 
+
   for (let r = 0; r < AANTAL_RONDES; r++) {
     const startIdx    = r * VRAGEN_PER_RONDE;
     const rondeVragen = rondeVolgorde[r].vragen;
@@ -541,71 +502,65 @@ function toonEindresultaat() {
     rondeScores.push(score);
     totalScore += score;
   }
- 
+
   document.getElementById('res-score').textContent = totalScore;
-  document.getElementById('res-total').textContent = ⁠ /${totaal} ⁠;
+  document.getElementById('res-total').textContent = `/${totaal}`;
   document.getElementById('res-name').textContent  = userName;
   document.getElementById('res-msg').textContent   =
-    totalScore === totaal     ? 'Perfekte Punktzahl! Ausgezeichnete Arbeit!!!'         :
-    totalScore >= totaal*.75  ? 'Sehr gut gemacht! Gratuliere!'                        :
-    totalScore >= totaal*.5   ? 'Ordentliches Ergebnis. Weiter üben!'       :
-                                'Guter Start, aber da ist noch Luft nach oben !';
- 
-  // Score per ronde kaartjes
+    totalScore === totaal        ? 'Perfekte Punktzahl! Ausgezeichnete Arbeit!!!' :
+    totalScore >= totaal * .75   ? 'Sehr gut gemacht! Gratuliere!'                :
+    totalScore >= totaal * .5    ? 'Ordentliches Ergebnis. Weiter üben!'          :
+                                   'Guter Start, aber da ist noch Luft nach oben!';
+
   document.getElementById('score-per-ronde').innerHTML = rondeScores.map((s, r) =>
     `<div class="score-ronde-card">
-      <div class="label">Tisch ${tafelnummerVoorRonde(r)}</div>
-      <div class="value">${s}/${VRAGEN_PER_RONDE}</div>
-    </div>`
+       <div class="label">Tisch ${tafelnummerVoorRonde(r)}</div>
+       <div class="value">${s}/${VRAGEN_PER_RONDE}</div>
+     </div>`
   ).join('');
- 
-  // Antwoorden per ronde
+
   document.getElementById('answers-per-ronde').innerHTML = Array.from({length: AANTAL_RONDES}, (_, r) => {
     const startIdx    = r * VRAGEN_PER_RONDE;
     const rondeVragen = rondeVolgorde[r].vragen;
     const tafel       = tafelnummerVoorRonde(r);
-    const items       = rondeVragen.map((v, i) => {
+    const items = rondeVragen.map((v, i) => {
       const given   = antwoorden[startIdx + i] || '—';
       const correct = given.toLowerCase() === v.term.toLowerCase();
       return `<div class="answer-item">
         <p class="q-label">Frage ${v.vraagnummer}</p>
-        <p class="given"><span class="tag ${correct?'good':'bad'}">${correct?'✓':'✗'}</span> ${given}</p>
-        ${!correct ? ⁠ <p class="correct-show">Richtig: ${v.term}</p> ⁠ : ''}
+        <p class="given"><span class="tag ${correct ? 'good' : 'bad'}">${correct ? '✓' : '✗'}</span> ${given}</p>
+        ${!correct ? `<p class="correct-show">Richtig: ${v.term}</p>` : ''}
       </div>`;
     }).join('');
     return `<div class="ronde-sectie">
-      <div class="ronde-header">Runde ${r+1} — Tisch ${tafel} (${rondeScores[r]}/${VRAGEN_PER_RONDE} richtig)</div>
+      <div class="ronde-header">Runde ${r + 1} — Tisch ${tafel} (${rondeScores[r]}/${VRAGEN_PER_RONDE} richtig)</div>
       <div class="answers-review" style="margin-bottom:16px">${items}</div>
     </div>`;
   }).join('');
- 
+
   showScreen('screen-result');
- 
-  // Antwoorden opbouwen als string: "1:Aorta,2:Tibia,..."
-  // Met markering of het goed of fout is
+
   const antwoordenStr = Array.from({length: AANTAL_RONDES}, (_, r) => {
     const startIdx    = r * VRAGEN_PER_RONDE;
-    const rondeVragen = rondeVolgorde[r].vragen;  // .vragen want object {tafelnummer, vragen}
+    const rondeVragen = rondeVolgorde[r].vragen;
     return rondeVragen.map((v, i) => {
-      const gegeven  = antwoorden[startIdx + i] || '—';
-      const correct  = gegeven.toLowerCase() === v.term.toLowerCase();
-      return ⁠ ${v.vraagnummer}:${gegeven}:${correct ? 'goed' : 'fout'} ⁠;
+      const gegeven = antwoorden[startIdx + i] || '—';
+      const correct = gegeven.toLowerCase() === v.term.toLowerCase();
+      return `${v.vraagnummer}:${gegeven}:${correct ? 'goed' : 'fout'}`;
     });
   }).flat().join(',');
- 
-  // Score opslaan
+
   api('saveScore', {
-    name:        userName,
-    starttafel:  starttafel,
-    score:       totalScore,
-    total:       totaal,
-    date:        new Date().toLocaleDateString('nl-NL'),
-    antwoorden:  antwoordenStr
+    name:       userName,
+    starttafel: starttafel,
+    score:      totalScore,
+    total:      totaal,
+    date:       new Date().toLocaleDateString('nl-NL'),
+    antwoorden: antwoordenStr
   });
 }
- 
+
 document.getElementById('btn-restart').addEventListener('click', () => {
-  // Wis naam, tafelnummer en header zodat er geen verwarring is
   document.getElementById('inp-name').value  = '';
   document.getElementById('inp-tafel').value = '';
   document.getElementById('header-sub').textContent = 'Runden Quiz';
@@ -613,10 +568,7 @@ document.getElementById('btn-restart').addEventListener('click', () => {
   starttafel = 0;
   showScreen('screen-login');
 });
- 
-/* =====================================================
-   ENTER KEY LOGIN
-   ===================================================== */
+
 document.getElementById('inp-name').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('btn-start').click();
 });
